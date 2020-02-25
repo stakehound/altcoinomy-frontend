@@ -44,6 +44,9 @@ Your react app will then run on [http://localhost:8080](http://localhost:8080).
 
 ### Try the sample
 
+![bootstrap integration screenshot](doc/integration-sample.png "This is what you shouuld get if everything went well")
+
+
 A bootstrap demo is available in the `samples/bootstrap-integration` folder. If the POC is running on [http://localhost:8080](http://localhost:8080) you can simply load the index.html file to see how you can integrate the POC in your basic bootstrap website.
 
 > Note: If you want to change the URL you just need to edit the `samples/bootstrap-integration/index.html` file and change the iframe target.
