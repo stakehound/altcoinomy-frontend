@@ -1,2 +1,2 @@
-export const API_ROOT = 'https://api.altcoinomy.com';
+export const API_ROOT = 'https://api-staging.altcoinomy.com';
 export const APP_NAME = 'Altcoinomy';
