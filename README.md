@@ -1,6 +1,8 @@
 # Issuance React sample
 
-This is a react implementation of the issuance platform. You will find the React application as well as a demonstration of how to implement it in your webpage.
+This is a React implementation of the issuance platform. It communicates directly with Altcoinomy's API.
+
+You will find the React application as well as a demonstration of how to implement it in your webpage.
 
 ## Deploy the React app
 
