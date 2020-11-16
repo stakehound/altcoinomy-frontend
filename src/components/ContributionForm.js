@@ -19,8 +19,6 @@ function ContributionForm(props) {
     return await res.blob();
   }
 
-  console.log("DATA", toJS(data));
-
   if (loading) {
     return (
       <Spinner color="secondary" />

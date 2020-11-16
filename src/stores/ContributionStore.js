@@ -17,6 +17,12 @@ class ContributionStore {
 
   setInitialData(data) {
     this.data = data;
+    if (!data) {
+      this.data = {
+        tier: "tier1",
+        currencies: []
+      }
+    }
   }
 
   getTotalChf() {

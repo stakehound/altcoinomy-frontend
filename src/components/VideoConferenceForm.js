@@ -18,8 +18,6 @@ function VideoConferenceForm(props) {
     );
   }
 
-  console.log("FILL STATUS");
-
   return (
     <CardGroup>
       {

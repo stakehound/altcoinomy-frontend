@@ -125,8 +125,8 @@ const Subscriptions = {
     requests.post(`/subscriptions/${id}/files`, { filename, file, type }),
   extraDocument: (id, documentId, data) =>
     requests.post(`/subscriptions/${id}/extra-document/${documentId}`, data),
-  finalize: (id) =>
-    requests.get(`/subscriptions/${id}/submit`),
+  finalize: (id, data) =>
+    requests.post(`/subscriptions/${id}/submit`, data),
 };
 
 const VideoConference = {

@@ -8,6 +8,7 @@ class SubscriptionStore {
   finalizingCount = 0;
   subscriptionRegistry = observable.map();
   fillStatus = null;
+  terms = false;
   modified = {};
   errors = {}
 
@@ -31,10 +32,18 @@ class SubscriptionStore {
     this.fillStatus = fillStatus;
   }
 
-  finalize(id) {
+  setTerms(terms) {
+    this.terms = terms;
+  }
+
+  getTerms() {
+    return this.terms;
+  }
+
+  finalize(id, acceptedTerms) {
     this.finalizingCount++;
 
-    return Subscriptions.finalize(id)
+    return Subscriptions.finalize(id, { terms_accepted: acceptedTerms })
       .then(action(fillStatus => {
         return fillStatus;
       }))
@@ -190,6 +199,7 @@ decorate(SubscriptionStore, {
   finalizingCount: observable,
   subscriptionRegistry: observable,
   fillStatus: observable,
+  terms: observable,
   modified: observable,
   loading: computed,
   subscriptions: computed,

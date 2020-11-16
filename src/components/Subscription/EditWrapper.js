@@ -15,6 +15,7 @@ import Step5TokenDeliveryAddress from '../Step/Step5TokenDeliveryAddress';
 import Step6VideoConference from '../Step/Step6VideoConference';
 import GlobalErrors from '../GlobalErrors';
 import moment from 'moment';
+import CustomInput from 'reactstrap/lib/CustomInput';
 
 function SubscriptionEditWrapper(props) {
   const { subscription, fillStatus, loading, SubscriptionStore, finalizing } = props;
@@ -91,6 +92,8 @@ function SubscriptionEditWrapper(props) {
       break;
   }
 
+  const terms = SubscriptionStore.getTerms();
+
 
   return (
     <>
@@ -147,6 +150,17 @@ function SubscriptionEditWrapper(props) {
 
       <Row className="justify-content-md-between align-items-md-center">
         <Col xs="12" md={{ size: 'auto' }} className="mb-3 mb-md-4">
+          <CustomInput type="checkbox" id={'terms'}
+            required={true}
+            label="I have read the terms and conditions"
+            checked={terms}
+            onChange={(ev) => {
+              SubscriptionStore.setTerms(ev.target.checked);
+            }}
+            invalid={false}
+          >
+            <span className="required"></span>
+          </CustomInput>
           <Button
             className={`w-100 ${finalizing ? "loading" : ''}`}
             color="primary"
@@ -154,7 +168,7 @@ function SubscriptionEditWrapper(props) {
             onClick={() => {
               setSuccessMessage(null);
               setGlobalErrors(null);
-              SubscriptionStore.finalize(subscription.id)
+              SubscriptionStore.finalize(subscription.id, terms)
                 .then(res => {
                   SubscriptionStore.setFillStatus(res);
                   setSuccessMessage("Thanks for your submission. You will be updated soon.");
