@@ -8,6 +8,7 @@ class SubscriptionStore {
   finalizingCount = 0;
   subscriptionRegistry = observable.map();
   fillStatus = null;
+  globalErrors = [];
   terms = false;
   modified = {};
   errors = {}
@@ -26,6 +27,14 @@ class SubscriptionStore {
 
   getSubscription(id) {
     return this.subscriptionRegistry.get(id);
+  }
+
+  setGlobalErrors(globalErrors) {
+    this.globalErrors = globalErrors;
+  }
+
+  getGlobalErrors() {
+    return this.globalErrors;
   }
 
   setFillStatus(fillStatus) {
@@ -144,6 +153,7 @@ class SubscriptionStore {
   }
 
   patchSubscription(groupName, fieldsName = 'fields') {
+    this.setGlobalErrors(null);
     const subscriptionId = this.fillStatus.subscription_id;
     const data = {
       subscription_id: subscriptionId,
@@ -174,6 +184,7 @@ class SubscriptionStore {
     this.loadingCount++;
 
     this.resetFillStatus();
+    this.setGlobalErrors(null);
 
     return Subscriptions.getFillStatus(id)
       .then(action(fillStatus => {
@@ -199,6 +210,7 @@ decorate(SubscriptionStore, {
   finalizingCount: observable,
   subscriptionRegistry: observable,
   fillStatus: observable,
+  globalErrors: observable,
   terms: observable,
   modified: observable,
   loading: computed,

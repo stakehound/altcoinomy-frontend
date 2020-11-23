@@ -19,9 +19,10 @@ import CustomInput from 'reactstrap/lib/CustomInput';
 
 function SubscriptionEditWrapper(props) {
   const { subscription, fillStatus, loading, SubscriptionStore, finalizing } = props;
+  const { globalErrors } = SubscriptionStore;
   const [stepOpen, setStepOpen] = useState();
   const [shown, setShown] = useState();
-  const [globalErrors, setGlobalErrors] = useState();
+  // const [globalErrors, setGlobalErrors] = useState();
   const [successMessage, setSuccessMessage] = useState();
 
   const stepComponents = [
@@ -167,14 +168,16 @@ function SubscriptionEditWrapper(props) {
             disabled={finalizing}
             onClick={() => {
               setSuccessMessage(null);
-              setGlobalErrors(null);
+              // setGlobalErrors(null);
+              SubscriptionStore.setGlobalErrors(null);
               SubscriptionStore.finalize(subscription.id, terms)
                 .then(res => {
                   SubscriptionStore.setFillStatus(res);
                   setSuccessMessage("Thanks for your submission. You will be updated soon.");
                 })
                 .catch(err => {
-                  setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.")
+                  SubscriptionStore.setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.");
+                  // setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.")
                 });
             }}
           >
