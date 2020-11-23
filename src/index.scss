@@ -1,0 +1,169 @@
+@import "~bootstrap/scss/bootstrap";
+
+@mixin crypted-status-variant($status-color) {
+  color: theme-color-level($status-color, $alert-color-level);
+  @include gradient-bg(theme-color-level($status-color, $alert-bg-level));
+  border-color: theme-color-level($status-color, $alert-border-level);
+}
+
+.error {
+  color: $danger;
+}
+
+.ico-logo {
+  height: 64px;
+  width: auto;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.collapsing {
+  -webkit-transition: none;
+  transition: none;
+  display: none;
+}
+
+.custom-checkbox.custom-control>span.required:after,
+label.required:after {
+  content: "*";
+  display: inline-block;
+  color: $warning;
+  padding-left: 3px;
+  font-size: 1.75em;
+  line-height: 0;
+}
+
+.input-group {
+  &.crypted {
+    .input-group-prepend {
+      flex-grow: 1;
+      margin-right: 0;
+
+      .input-group-text {
+        flex-grow: 1;
+        border-radius: 0.25rem;
+        cursor: pointer;
+
+        &.status-FILLED {
+          @include crypted-status-variant('warning');
+        }
+
+        &.status-REFUSED {
+          @include crypted-status-variant('danger');
+        }
+
+        &.status-ACCEPTED {
+          @include crypted-status-variant('success');
+        }
+      }
+    }
+
+    .input-group-append {
+      margin-left: -2px;
+
+      .input-group-text {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.iframe-extra-document {
+  min-width: 100%;
+  min-height: 300px;
+  border: $input-border-width solid $input-border-color;
+  @include border-radius($input-border-radius, 0);
+}
+
+.wrapper-signature-pad {
+  border: $input-border-width solid $input-border-color;
+  @include border-radius($input-border-radius, 0);
+
+  &.is-invalid {
+    border-color: $form-feedback-invalid-color;
+
+    &~div .invalid-feedback {
+      display: block;
+    }
+  }
+
+  canvas {
+    cursor: crosshair;
+  }
+}
+
+.react-datepicker-wrapper {
+  display: block;
+
+  &.is-invalid {
+    &+.invalid-feedback {
+      display: block;
+    }
+  }
+
+  .input-group>& {
+    flex: 1 1 auto;
+
+    & .form-control {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}
+
+/* Additional styles */
+
+.navbar {
+  margin-bottom: 50px;
+}
+.bg-light {
+    background-color: #101F34 !important;
+}
+
+.navbar-light .navbar-nav .nav-link,
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link:visited{
+    color: #f8f9fa;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.navbar-toggler {
+  background-color: white;
+}
+
+.btn-primary {
+    color: #fff;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    background: linear-gradient(90deg, #48cdff 0%, #3bd9ff 100%);
+    border-color: inherit;
+}
+
+a{
+  color: #00aeef;
+}
+
+.alert-light {
+    color: #818182;
+    background-color: #fefefe;
+    border-color: #ccc;
+    margin-top: 15px;
+    font-size: 12px;
+}
+
+/* End of additional styles */
+
+.card.is-not-active,
+.list-group-item.is-not-active {
+  background-image: repeating-linear-gradient(-45deg, transparent 0 20px, rgba(0, 0, 0, 0.05) 20px 40px);
+  pointer-events: none;
+
+  &.current {
+    background-color: rgba(0, 255, 0, 0.2);
+  }
+}
+
+.invalid-feedback {
+  display: block;
+}
