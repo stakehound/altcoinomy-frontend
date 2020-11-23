@@ -59,17 +59,12 @@ function ContributionForm(props) {
           </InputGroup>
         </FormGroup>
 
-        {/* <Button
+        {pdf && pdf.href && <Button
           color="primary"
-          onClick={() => { SubscriptionStore.patchSubscription(groupName); }}
-          disabled={!SubscriptionStore.isStepModified(groupName, fieldName)}
+          onClick={() => { SubscriptionStore.loadFillStatus(subscriptionId); }}
         >
-          {
-            SubscriptionStore.isStepModified(groupName, fieldName)
-              ? 'Submit'
-              : 'No changes'
-          }
-        </Button> */}
+          I've downloaded my contribution report
+        </Button>}
       </>
     );
   }
