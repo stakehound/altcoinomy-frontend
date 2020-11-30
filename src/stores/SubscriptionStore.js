@@ -49,8 +49,13 @@ class SubscriptionStore {
     return this.terms;
   }
 
+  isSubmitted(subscriptionId) {
+    return !!sessionStorage.getItem(`submitted-${subscriptionId}`);
+  }
+
   finalize(id, acceptedTerms) {
     this.finalizingCount++;
+    sessionStorage.setItem(`submitted-${id}`, true);
 
     return Subscriptions.finalize(id, { terms_accepted: acceptedTerms })
       .then(action(fillStatus => {

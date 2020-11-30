@@ -126,3 +126,35 @@ label.required:after {
 .invalid-feedback {
   display: block;
 }
+
+.calendar {
+  white-space: nowrap;
+  .card {
+    flex: none;
+    @include media-breakpoint-up(lg) {
+      width: calc(100% / 6);
+    }
+  }
+
+  .current {
+    background-color: rgba(0, 255, 0, 0.2);
+  }
+}
+
+.subscription-submitted {
+  input, select, textarea {
+    &.required {
+      &:invalid {
+        border: 1px solid red;
+      }
+    }
+  }
+
+  .file-input-required {
+    &.status-empty {
+      border: 1px solid red;
+      border-radius: 4px;
+    }
+  }
+
+}

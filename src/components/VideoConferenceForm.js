@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Spinner, CardGroup, Card, CardHeader, ListGroup, ListGroupItem } from 'reactstrap';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 function VideoConferenceForm(props) {
   const { VideoConferenceStore, SubscriptionStore, subscriptionId } = props;
-  const { loading, slots } = VideoConferenceStore;
+  const { loading, slots, preferredLanguage } = VideoConferenceStore;
   const { fillStatus } = SubscriptionStore;
+
+  function handleLanguageSelect(e) { VideoConferenceStore.setPreferredLanguage(e.target.value) }
 
   useEffect(() => {
     VideoConferenceStore.loadSlots();
@@ -18,36 +20,85 @@ function VideoConferenceForm(props) {
     );
   }
 
-  return (
-    <CardGroup>
-      {
-        Object.keys(slots).map(date =>
-          <Card key={date}>
-            <CardHeader>
-              {moment(date).format('DD/MM/YYYY')}
-            </CardHeader>
-            <ListGroup flush>
-              {
-                slots[date].map(slot =>
-                  <ListGroupItem
-                    key={slot.id} tag="button" action
-                    className={`${slot.status === 'BOOKED' ? 'is-not-active' : ''} ${fillStatus.video_conference_slot_id === slot.id ? 'current' : ''}`}
-                    onClick={() => {
-                      VideoConferenceStore.bookSlot(slot.id, subscriptionId)
-                        .then(res => {
-                          SubscriptionStore.loadFillStatus(subscriptionId);
-                        });
-                    }}
-                  >
-                    {moment(slot.date).format('HH:mm')}
-                  </ListGroupItem>
-                )
+
+  return (<>
+    <h2>First, choose your preferred language</h2>
+    <div className="my-3">
+      <div className="form-check form-check-inline">
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage1" checked={preferredLanguage === 'ARABIC'} onChange={handleLanguageSelect} value="ARABIC" />
+        <label className="form-check-label" htmlFor="preferredLanguage1">Arabic</label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage2" checked={preferredLanguage === 'CHINESE'} onChange={handleLanguageSelect} value="CHINESE" />
+        <label className="form-check-label" htmlFor="preferredLanguage2">Chinese</label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage3" checked={preferredLanguage === 'ENGLISH'} onChange={handleLanguageSelect} value="ENGLISH" />
+        <label className="form-check-label" htmlFor="preferredLanguage3">English</label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage4" checked={preferredLanguage === 'FRENCH'} onChange={handleLanguageSelect} value="FRENCH" />
+        <label className="form-check-label" htmlFor="preferredLanguage4">French</label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage5" checked={preferredLanguage === 'GERMAN'} onChange={handleLanguageSelect} value="GERMAN" />
+        <label className="form-check-label" htmlFor="preferredLanguage5">German</label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage6" checked={preferredLanguage === 'RUSSIAN'} onChange={handleLanguageSelect} value="RUSSIAN" />
+        <label className="form-check-label" htmlFor="preferredLanguage6">Russian</label>
+      </div>
+    </div>
+    {VideoConferenceStore.getPreferredLanguage() &&
+      <><h2>Pick a slot <span className="badge badge-info">Your timezone {moment.tz.guess()}</span></h2>
+        <CardGroup className="calendar">
+          {
+            Object.keys(slots).filter(date => {
+              if (['0', '6'].includes(moment(date).format('e'))) {
+                // Don't display slots over the week-end
+                return false;
               }
-            </ListGroup>
-          </Card>
-        )
-      }
-    </CardGroup>
+
+              if (moment(date).diff(moment(new Date()), 'days') < 2) {
+                // The selected slot should be at least 2 days in the future
+                return false;
+              }
+              return true;
+            }).slice(0, 6).map(date =>
+              <Card className="my-2" key={date}>
+                <CardHeader>
+                  {moment(date).format('ddd Do MMM')}
+                </CardHeader>
+                <ListGroup flush>
+                  {
+                    slots[date].filter(slot => {
+                      const time = parseInt(moment(slot.date).tz("Europe/Zurich").format('H'));
+                      // Display only schedules from 8AM / 4:45PM GVA TIME
+                      return time >= 8 && time <= 16
+                    }).map(slot => {
+                      return <ListGroupItem
+                        key={slot.id} tag="button" action
+                        className={`${slot.status === 'BOOKED' ? 'is-not-active' : ''} ${fillStatus.video_conference_slot_id === slot.id ? 'current' : ''}`}
+                        onClick={() => {
+                          VideoConferenceStore.bookSlot(slot.id, subscriptionId)
+                            .then(res => {
+                              SubscriptionStore.loadFillStatus(subscriptionId);
+                            });
+                        }}
+                      >
+                        GVA - {moment(slot.date).tz("Europe/Zurich").format('HH:mm')}<br />
+                        LOC - {moment(slot.date).tz(moment.tz.guess()).format('HH:mm')}
+                      </ListGroupItem>
+                    }
+                    )
+                  }
+                </ListGroup>
+              </Card>
+            )
+          }
+        </CardGroup>
+      </>}
+  </>
   );
 }
 

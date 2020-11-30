@@ -22,7 +22,6 @@ function SubscriptionEditWrapper(props) {
   const { globalErrors } = SubscriptionStore;
   const [stepOpen, setStepOpen] = useState();
   const [shown, setShown] = useState();
-  // const [globalErrors, setGlobalErrors] = useState();
   const [successMessage, setSuccessMessage] = useState();
 
   const stepComponents = [
@@ -133,17 +132,20 @@ function SubscriptionEditWrapper(props) {
         </Row>
       }
 
-      {stepComponents.map((Component, index) =>
-        <Component key={index}
-          subscription={subscription}
-          fillStatus={fillStatus}
-          stepOpen={stepOpen}
-          setStepOpen={setStepOpen}
-          shown={shown}
-          setShown={setShown}
-          ico={subscription.ico_subscribed[0].ico}
-        />)
-      }
+      <div className={`${subscription && SubscriptionStore.isSubmitted(subscription.id) ? 'subscription-submitted' : ''}`}>
+        {stepComponents.map((Component, index) =>
+          <Component key={index}
+
+            subscription={subscription}
+            fillStatus={fillStatus}
+            stepOpen={stepOpen}
+            setStepOpen={setStepOpen}
+            shown={shown}
+            setShown={setShown}
+            ico={subscription.ico_subscribed[0].ico}
+          />)
+        }
+      </div>
 
       <GlobalErrors errors={globalErrors}></GlobalErrors>
       {successMessage && <Alert color="success">{successMessage}</Alert>}
@@ -153,6 +155,7 @@ function SubscriptionEditWrapper(props) {
         <Col xs="12" md={{ size: 'auto' }} className="mb-3 mb-md-4">
           <CustomInput type="checkbox" id={'terms'}
             required={true}
+            className="required"
             label="I have read the terms and conditions"
             checked={terms}
             onChange={(ev) => {
@@ -177,7 +180,6 @@ function SubscriptionEditWrapper(props) {
                 })
                 .catch(err => {
                   SubscriptionStore.setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.");
-                  // setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.")
                 });
             }}
           >

@@ -132,8 +132,12 @@ const Subscriptions = {
 const VideoConference = {
   list: () =>
     requests.get('/video-conference-planning/slots'),
-  book: (slotId, subscriptionId) =>
-    requests.post('/video-conference-planning/slots/book', { slot_id: slotId, subscription_id: subscriptionId }),
+  book: (slotId, subscriptionId, preferredLanguage) =>
+    requests.post('/video-conference-planning/slots/book', {
+      slot_id: slotId,
+      subscription_id: subscriptionId,
+      preferred_language: preferredLanguage
+    }),
 };
 
 export { Accounts, Countries, Customers, Icos, IcoDocuments, Annexes, Subscriptions, Contribution, VideoConference };
