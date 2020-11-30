@@ -209,6 +209,20 @@ class SubscriptionStore {
     return Subscriptions.uploadFile(this.fillStatus.subscription_id, fileName, fileBase64, fileType);
   }
 
+  patchPaymentStatus(subscriptionId, currencies) {
+    this.loadingCount++;
+
+    this.errors = {};
+
+    return Subscriptions.patchPaymentStatus(subscriptionId, currencies)
+      .then()
+      .catch(err => {
+        this.errors = err.response.body;
+      })
+      .finally(action(() => { this.loadingCount--; }))
+    ;
+  }
+
 }
 decorate(SubscriptionStore, {
   loadingCount: observable,
@@ -228,6 +242,7 @@ decorate(SubscriptionStore, {
   patchSubscription: action,
   loadFillStatus: action,
   resetFillStatus: action,
+  patchPaymentStatus: action,
 });
 
 export default new SubscriptionStore();

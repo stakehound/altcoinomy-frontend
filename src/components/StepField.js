@@ -348,7 +348,7 @@ function StepField(props) {
           }
           <div className="custom-file">
             <input type="file"
-              className={'custom-file-input' + (loadState === 'error' || hasError ? ' is-invalid' : '') + " " + `${fieldData.required ? 'required' : ''}`}
+              className={'custom-file-input' + (loadState === 'error' || hasError ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
               id={fieldName}
               required={fieldData.required}
               data-field-name={`${groupName}.fields.${fieldName}`}

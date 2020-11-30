@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { observer, inject } from 'mobx-react';
 import { Alert, Media, Spinner, Row, Col, Button } from 'reactstrap';
+import statusParser from '../../helpers/statusParser'
 import IcoLogo from '../IcoLogo';
 import Step1RegisterAs from '../Step/Step1RegisterAs';
 import Step2Individual from '../Step/Step2Individual';
@@ -20,6 +22,7 @@ import CustomInput from 'reactstrap/lib/CustomInput';
 function SubscriptionEditWrapper(props) {
   const { subscription, fillStatus, loading, SubscriptionStore, finalizing } = props;
   const { globalErrors } = SubscriptionStore;
+  const terms = SubscriptionStore.getTerms();
   const [stepOpen, setStepOpen] = useState();
   const [shown, setShown] = useState();
   const [successMessage, setSuccessMessage] = useState();
@@ -60,41 +63,6 @@ function SubscriptionEditWrapper(props) {
     );
   }
 
-
-  let subscriptionStatus = "";
-  switch (fillStatus.status) {
-    case "subscription_pending":
-      subscriptionStatus = "Subscription pending";
-      break;
-    case "subscription_submitted":
-      subscriptionStatus = "Waiting for Altcoinomy review";
-      break;
-    case "subscription_onboarded":
-      subscriptionStatus = "Onboarded";
-      break;
-    case "subscription_to_be_fixed":
-      subscriptionStatus = "Waiting your updates";
-      break;
-    case "subscription_rejected":
-      subscriptionStatus = "KYC rejected";
-      break;
-    case "subscription_to_report":
-      subscriptionStatus = "KYC rejected";
-      break;
-    case "subscription_acknowledged":
-      subscriptionStatus = "Subscription accepted";
-      break;
-    case "subscription_auto_wait_worldcheck":
-      subscriptionStatus = "Verification pending";
-      break;
-    default:
-      subscriptionStatus = subscription.status.replace("_", " ");
-      break;
-  }
-
-  const terms = SubscriptionStore.getTerms();
-
-
   return (
     <>
       <Media className="mb-3">
@@ -113,7 +81,7 @@ function SubscriptionEditWrapper(props) {
         <Col xs="12" className="mb-12 mb-md-3 text-right">
           <strong>Status of your subscription: </strong>
           <div className="badge badge-info">
-            {subscriptionStatus}
+            {statusParser(subscription.status)}
           </div>
         </Col>
       </Row>
@@ -151,8 +119,8 @@ function SubscriptionEditWrapper(props) {
       {successMessage && <Alert color="success">{successMessage}</Alert>}
 
 
-      <Row className="justify-content-md-between align-items-md-center">
-        <Col xs="12" md={{ size: 'auto' }} className="mb-3 mb-md-4">
+      <Row className="justify-content-md-between align-items-md-end mb-4">
+        <Col xs="12" md={{ size: 'auto' }}>
           <CustomInput type="checkbox" id={'terms'}
             required={true}
             className="required"
@@ -186,6 +154,13 @@ function SubscriptionEditWrapper(props) {
             {finalizing ? 'Submission in progress...' : 'Finalize my KYC'}
           </Button>
         </Col>
+        {
+          subscription.status !== 'subscription_pending'
+          &&
+          <Col xs="12" md={{ size: 'auto' }} className="mt-3 mt-md-0">
+            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-outline-primary w-100">Payment status</Link>
+          </Col>
+        }
       </Row>
     </>
   );

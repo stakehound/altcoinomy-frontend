@@ -127,6 +127,8 @@ const Subscriptions = {
     requests.post(`/subscriptions/${id}/extra-document/${documentId}`, data),
   finalize: (id, data) =>
     requests.post(`/subscriptions/${id}/submit`, data),
+  patchPaymentStatus: (id, data) =>
+    requests.patch(`/subscriptions/${id}/payment-status`, { currencies: data }),
 };
 
 const VideoConference = {
