@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { observer, inject } from 'mobx-react';
-import { Alert, Media, Spinner, Row, Col, Button, CustomInput, Input, FormGroup} from 'reactstrap';
+import { Alert, Media, Spinner, Row, Col, Button, CustomInput, Input, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Label } from 'reactstrap';
 import IcoLogo from '../IcoLogo';
 import FormErrors from '../../components/FormErrors';
 import statusParser from '../../helpers/statusParser'
@@ -10,62 +10,119 @@ function SubscriptionPaymentStatusWrapper(props) {
   const { loading, errors } = SubscriptionStore;
   const subscription = SubscriptionStore.getSubscription(id);
 
-  const [currencies, setCurrencies] = useState([]);
+  const [formData, setFormData] = useState({
+    fiat: null,
+    crypto: null
+  });
+  const [currencies, setCurrencies] = useState();
+  const [modified, setModified] = useState();
   const [successMessage, setSuccessMessage] = useState();
   
   useEffect(() => {
     SubscriptionStore.loadSubscription(id, { acceptCached: false });
   }, [SubscriptionStore, id]);
 
+  // subscription loaded
   useEffect(() => {
-    let currenciesData = [];
+    const formData = {
+      fiat: null,
+      crypto: null
+    };
 
     if (subscription && subscription.ico_subscribed[0].investment.fiat && subscription.ico_subscribed[0].investment.fiat.currency) {
-      currenciesData.push({
+      formData.fiat = {
         currency: subscription.ico_subscribed[0].investment.fiat.currency,
-        payment_label: subscription.ico_subscribed[0].investment.fiat.payment_label,
-        payment_status: subscription.ico_subscribed[0].investment.fiat.payment
+        init_status: subscription.ico_subscribed[0].investment.fiat.payment,
+        status: subscription.ico_subscribed[0].investment.fiat.payment,
+        label: '',
+        init_label_status: subscription.ico_subscribed[0].investment.fiat.payment_label ? 'FILLED': 'EMPTY',
+        label_status: subscription.ico_subscribed[0].investment.fiat.payment_label ? 'FILLED': 'EMPTY'
+      };
+    }
+
+    if (subscription && subscription.ico_subscribed[0].investment.cryptos) {
+      formData.crypto = subscription.ico_subscribed[0].investment.cryptos
+        .map(crypto => {
+          return {
+            currency: crypto.currency.value,
+            init_status: crypto.payment,
+            status: crypto.payment,
+            label: '',
+            init_label_status: crypto.payment_label ? 'FILLED': 'EMPTY',
+            label_status: crypto.payment_label ? 'FILLED': 'EMPTY'
+          };
+        })
+        .reduce((val, item) => {val[item.currency] = {...item}; return val;}, {})
+      ;
+    }
+
+    setFormData(formData);
+  }, [subscription]);
+
+  // form data changed
+  // prepare currencies object ot update subscription
+  // prepare isModified state
+  useEffect(() => {
+    const currenciesData = {
+      currencies: []
+    };
+
+    if (formData.fiat) {
+      const fiatData = {
+        currency: formData.fiat.currency
+      };
+
+      if (formData.fiat.init_status !== formData.fiat.status) {
+        fiatData['payment_status'] = formData.fiat.status;
+      }
+
+      if (formData.fiat.label !== '') {
+        fiatData['payment_label'] = formData.fiat.label;
+        fiatData['payment_status'] = formData.fiat.status;
+      }
+
+      if (Object.keys(fiatData).length > 1) {
+        currenciesData.currencies.push(fiatData);
+      }
+    }
+
+    if (formData.crypto) {
+      Object.keys(formData.crypto).forEach(cryptoCurrency => {
+        const cryptoData = {
+          currency: cryptoCurrency
+        };
+
+        if (formData.crypto[cryptoCurrency].init_status !== formData.crypto[cryptoCurrency].status) {
+          cryptoData['payment_status'] = formData.crypto[cryptoCurrency].status;
+        }
+  
+        if (formData.crypto[cryptoCurrency].label !== '') {
+          cryptoData['payment_label'] = formData.crypto[cryptoCurrency].label;
+          cryptoData['payment_status'] = formData.crypto[cryptoCurrency].status;
+        }
+  
+        if (Object.keys(cryptoData).length > 1) {
+          currenciesData.currencies.push(cryptoData);
+        }
       });
     }
 
-
-    if (subscription && subscription.ico_subscribed[0].investment.cryptos) {
-      currenciesData = currenciesData.concat(subscription.ico_subscribed[0].investment.cryptos.map(crypto => {
-        return {
-          currency: crypto.currency.value,
-          payment_label: crypto.payment_label,
-          payment_status: crypto.payment
-        };
-      }));
-    }
-
     setCurrencies(currenciesData);
-  }, [subscription]);
+    setModified(currenciesData.currencies.length > 0);
+  }, [formData]);
 
-  function updateFormData(currency, field, value) {
-    setCurrencies(prevState => prevState.map(currencyData => {
-      if (currencyData.currency !== currency) {
-        return currencyData;
+  function updateFormData(type, currency, field, value) {
+    setFormData(prevState => {
+      const newState = {...prevState};
+
+      if (type === 'fiat') {
+        newState.fiat[field] = value;
+      } else {
+        newState.crypto[currency][field] = value;
       }
 
-      return {
-        currency: currencyData.currency,
-        payment_label: field === 'label' ? value : currencyData.payment_label,
-        payment_status: field === 'status' ? value : currencyData.payment_status
-      }
-    }));
-  }
-
-  function getFiatCurrency() {
-    if (!subscription || !subscription.ico_subscribed[0].investment.fiat || !subscription.ico_subscribed[0].investment.fiat.currency) {
-      return false;
-    }
-
-    return subscription.ico_subscribed[0].investment.fiat.currency;
-  }
-
-  function getCurrencyData(currency) {
-    return currencies.filter(currencyData => currencyData.currency === currency)[0];
+      return newState;
+    });
   }
 
   if (loading) {
@@ -78,14 +135,6 @@ function SubscriptionPaymentStatusWrapper(props) {
     return (
       <Alert color="danger">
         Can't load subscription!
-      </Alert>
-    );
-  }
-
-  if (!currencies.length) {
-    return (
-      <Alert color="danger">
-        No investment specified!
       </Alert>
     );
   }
@@ -117,47 +166,115 @@ function SubscriptionPaymentStatusWrapper(props) {
       {successMessage && <Alert color="success">{successMessage}</Alert>}
 
       {
-        getFiatCurrency()
+        formData.fiat !== null
         &&
         <Row className="mb-4">
           <Col xs="12">
-            <h3 className="font-weight-light">Account details to transfer your funds in <span className="font-weight-bold">{getCurrencyData(getFiatCurrency()).currency}</span></h3>
+            <h3 className="font-weight-light">Account details to transfer your funds in <span className="font-weight-bold">{formData.fiat.currency}</span></h3>
             <FormGroup>
-              <CustomInput inline type="radio" name={`payment_status_${getCurrencyData(getFiatCurrency()).currency}`} label="Not paid yet" id={`payment_status_${getCurrencyData(getFiatCurrency()).currency}_to_be_checked`} value="status.to_be_checked" checked={getCurrencyData(getFiatCurrency()).payment_status === 'status.to_be_checked'} onChange={ev => {updateFormData(getCurrencyData(getFiatCurrency()).currency, 'status', ev.target.value)}} />
-              <CustomInput inline type="radio" name={`payment_status_${getCurrencyData(getFiatCurrency()).currency}`} label="Notify that I made the payment" id={`payment_status_${getCurrencyData(getFiatCurrency()).currency}_announced`} value="status.announced" checked={getCurrencyData(getFiatCurrency()).payment_status === 'status.announced'} onChange={ev => {updateFormData(getCurrencyData(getFiatCurrency()).currency, 'status', ev.target.value)}} />
+              <CustomInput inline type="radio" name={`payment_status_${formData.fiat.currency}`} label="Not paid yet" id={`payment_status_${formData.fiat.currency}_to_be_checked`} value="status.to_be_checked" checked={formData.fiat.status === 'status.to_be_checked'} onChange={ev => {updateFormData('fiat', formData.fiat.currency, 'status', ev.target.value)}} />
+              <CustomInput inline type="radio" name={`payment_status_${formData.fiat.currency}`} label="Notify that I made the payment" id={`payment_status_${formData.fiat.currency}_announced`} value="status.announced" checked={formData.fiat.status === 'status.announced'} onChange={ev => {updateFormData('fiat', formData.fiat.currency, 'status', ev.target.value)}} />
             </FormGroup>
+
             <FormGroup>
-              <Input
-                type="text"
-                name={`payment_label_${getCurrencyData(getFiatCurrency()).currency}`}
-                label={`Reference used for the transfer (please update this field only if you did not use ${getCurrencyData(getFiatCurrency()).payment_label})`}
-                id={`payment_label_${getCurrencyData(getFiatCurrency()).currency}`}
-                value={getCurrencyData(getFiatCurrency()).payment_label ?? ''}
-                onChange={ev => {updateFormData(getCurrencyData(getFiatCurrency()).currency, 'label', ev.target.value)}}
-              />
+              <Label for={`payment_label_${formData.fiat.currency}`}>Reference used for the transfer</Label>
+              {
+                formData.fiat.label_status === 'FILLED'
+                &&
+                <InputGroup className="crypted">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText
+                      className={`status-${formData.fiat.label_status}`}
+                      onClick={ev => {updateFormData('fiat', formData.fiat.currency, 'label_status', 'MODIFIED')}}
+                    >
+                      {formData.fiat.label_status} (click to change)
+                    </InputGroupText>
+                  </InputGroupAddon>
+                </InputGroup>
+              }
+              {
+                formData.fiat.label_status !== 'FILLED'
+                &&
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText
+                      className="pointer"
+                      onClick={ev => {
+                        updateFormData('fiat', formData.fiat.currency, 'label', '');
+                        updateFormData('fiat', formData.fiat.currency, 'label_status', formData.fiat.init_label_status);
+                      }}
+                    >
+                      Reset
+                    </InputGroupText>
+                  </InputGroupAddon>
+
+                  <Input
+                    type="text"
+                    name={`payment_label_${formData.fiat.currency}`}
+                    id={`payment_label_${formData.fiat.currency}`}
+                    value={formData.fiat.label}
+                    onChange={ev => {updateFormData('fiat', formData.fiat.currency, 'label', ev.target.value)}}
+                  />
+                </InputGroup>
+              }
             </FormGroup>
           </Col>
         </Row>
       }
 
       {
-        subscription.ico_subscribed[0].investment.cryptos.map(crypto =>
-          <Row key={crypto.currency.value} className="mb-4">
+        formData.crypto !== null
+        &&
+        Object.keys(formData.crypto).map(cryptoCurrency =>
+          <Row key={cryptoCurrency} className="mb-4">
             <Col xs="12">
-              <h3 className="font-weight-light">Account details to transfer your funds in <span className="font-weight-bold">{getCurrencyData(crypto.currency.value).currency}</span></h3>
+              <h3 className="font-weight-light">Account details to transfer your funds in <span className="font-weight-bold">{cryptoCurrency}</span></h3>
               <FormGroup>
-                <CustomInput inline type="radio" name={`payment_status_${getCurrencyData(crypto.currency.value).currency}`} label="Not paid yet" id={`payment_status_${getCurrencyData(crypto.currency.value).currency}_to_be_checked`} value="status.to_be_checked" checked={getCurrencyData(crypto.currency.value).payment_status === 'status.to_be_checked'} onChange={ev => {updateFormData(getCurrencyData(crypto.currency.value).currency, 'status', ev.target.value)}} />
-                <CustomInput inline type="radio" name={`payment_status_${getCurrencyData(crypto.currency.value).currency}`} label="Notify that I made the payment" id={`payment_status_${getCurrencyData(crypto.currency.value).currency}_announced`} value="status.announced" checked={getCurrencyData(crypto.currency.value).payment_status === 'status.announced'} onChange={ev => {updateFormData(getCurrencyData(crypto.currency.value).currency, 'status', ev.target.value)}} />
+                <CustomInput inline type="radio" name={`payment_status_${cryptoCurrency}`} label="Not paid yet" id={`payment_status_${cryptoCurrency}_to_be_checked`} value="status.to_be_checked" checked={formData.crypto[cryptoCurrency].status === 'status.to_be_checked'} onChange={ev => {updateFormData('crypto', cryptoCurrency, 'status', ev.target.value)}} />
+                <CustomInput inline type="radio" name={`payment_status_${cryptoCurrency}`} label="Notify that I made the payment" id={`payment_status_${cryptoCurrency}_announced`} value="status.announced" checked={formData.crypto[cryptoCurrency].status === 'status.announced'} onChange={ev => {updateFormData('crypto', cryptoCurrency, 'status', ev.target.value)}} />
               </FormGroup>
+
               <FormGroup>
-                <Input
-                  type="text"
-                  name={`payment_label_${getCurrencyData(crypto.currency.value).currency}`}
-                  label={`Reference used for the transfer (please update this field only if you did not use ${getCurrencyData(crypto.currency.value).payment_label})`}
-                  id={`payment_label_${getCurrencyData(crypto.currency.value).currency}`}
-                  value={getCurrencyData(crypto.currency.value).payment_label ?? ''}
-                  onChange={ev => {updateFormData(getCurrencyData(crypto.currency.value).currency, 'label', ev.target.value)}}
-                />
+                <Label for={`payment_label_${cryptoCurrency}`}>TXID (transaction ID on the blockchain)</Label>
+                {
+                  (formData.crypto[cryptoCurrency].label_status === 'FILLED')
+                  &&
+                  <InputGroup className="crypted">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText
+                        className={`status-${formData.crypto[cryptoCurrency].label_status}`}
+                        onClick={ev => {updateFormData('crypto', cryptoCurrency, 'label_status', 'MODIFIED')}}
+                      >
+                        {formData.crypto[cryptoCurrency].label_status} (click to change)
+                      </InputGroupText>
+                    </InputGroupAddon>
+                  </InputGroup>
+                }
+                {
+                  formData.crypto[cryptoCurrency].label_status !== 'FILLED'
+                  &&
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText
+                        className="pointer"
+                        onClick={ev => {
+                          updateFormData('crypto', cryptoCurrency, 'label', '');
+                          updateFormData('crypto', cryptoCurrency, 'label_status', formData.crypto[cryptoCurrency].init_label_status);
+                        }}
+                      >
+                        Reset
+                      </InputGroupText>
+                    </InputGroupAddon>
+
+                    <Input
+                      type="text"
+                      name={`payment_label_${cryptoCurrency}`}
+                      id={`payment_label_${cryptoCurrency}`}
+                      value={formData.crypto[cryptoCurrency].label}
+                      onChange={ev => {updateFormData('crypto', cryptoCurrency, 'label', ev.target.value)}}
+                    />
+                  </InputGroup>
+                }
               </FormGroup>
             </Col>
           </Row>
@@ -165,20 +282,25 @@ function SubscriptionPaymentStatusWrapper(props) {
       }
 
       <Button color="primary"
+        disabled={!modified}
         onClick={() => {
           setSuccessMessage(null);
-          SubscriptionStore.setGlobalErrors(null);
 
           SubscriptionStore.patchPaymentStatus(subscription.id, currencies)
-          .then(res => {
-            if (res) {
-              setSuccessMessage("Thanks for your submission. Your payment status has been updated.");
-              SubscriptionStore.loadSubscription(id, { acceptCached: false });
-            }
-          })
+            .then(res => {
+              if (res) {
+                setSuccessMessage("Thanks for your submission. Your payment status has been updated.");
+                SubscriptionStore.loadSubscription(id, { acceptCached: false });
+              }
+            })
+          ;
         }}
       >
-        Confirm payment status
+        {
+          modified
+            ? 'Confirm payment status'
+            : 'No payment status changed'
+        }
       </Button>
     </>
   );
