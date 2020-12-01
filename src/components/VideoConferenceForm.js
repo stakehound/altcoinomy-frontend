@@ -14,12 +14,11 @@ function VideoConferenceForm(props) {
     VideoConferenceStore.loadSlots();
   }, [VideoConferenceStore]);
 
-  if (loading) {
+  if (loading || SubscriptionStore.loading) {
     return (
       <Spinner color="secondary" />
     );
   }
-
 
   return (<>
     <h2>First, choose your preferred language</h2>

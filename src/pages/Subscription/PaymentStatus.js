@@ -15,7 +15,7 @@ function SubscriptionPaymentStatus(props) {
               <h1>Subscription <small>payment status</small></h1>
             </Col>
             <Col xs="12" md={{ size: 'auto' }}>
-              <Link to={'/subscription'} className="btn btn-secondary w-100">Cancel</Link>
+              <Link to={'/subscription'} className="btn btn-secondary w-100">Back</Link>
             </Col>
           </Row>
 

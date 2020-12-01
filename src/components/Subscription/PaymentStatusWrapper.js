@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { Alert, Media, Spinner, Row, Col, Button, CustomInput, Input, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Label } from 'reactstrap';
 import IcoLogo from '../IcoLogo';
 import FormErrors from '../../components/FormErrors';
-import statusParser from '../../helpers/statusParser'
+import statusParser from '../../helpers/statusParser';
 
 function SubscriptionPaymentStatusWrapper(props) {
   const { id, SubscriptionStore } = props;
@@ -19,7 +19,7 @@ function SubscriptionPaymentStatusWrapper(props) {
   const [successMessage, setSuccessMessage] = useState();
   
   useEffect(() => {
-    SubscriptionStore.loadSubscription(id, { acceptCached: false });
+    SubscriptionStore.loadSubscription(id, { acceptCached: true });
   }, [SubscriptionStore, id]);
 
   // subscription loaded
