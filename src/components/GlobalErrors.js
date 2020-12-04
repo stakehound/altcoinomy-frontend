@@ -3,12 +3,20 @@ import { Alert } from 'reactstrap';
 
 function GlobalErrors(props) {
   const fieldsErrors = props.errors && props.errors.fields;
+
+  const SHOW_UNIQUE_MESSAGE = true;
+
   if (fieldsErrors) {
+
+    if (SHOW_UNIQUE_MESSAGE) {
+      return <Alert color="danger">Some fields are missing</Alert>
+    }
     if (typeof fieldsErrors === 'string') {
       return (
         <Alert color="danger">{fieldsErrors}</Alert>
       );
     }
+
 
     return (
       Object.keys(fieldsErrors).map(key => {

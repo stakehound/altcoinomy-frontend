@@ -178,6 +178,8 @@ function StepField(props) {
             </InputGroupAddon>
           }
           <Input
+            className={fieldData.required ? 'required' : ''}
+            required={fieldData.required}
             type="select"
             value={value}
             multiple={isMultiple}
@@ -222,6 +224,8 @@ function StepField(props) {
 
           <DatePicker
             id={fieldId}
+            className={fieldData.required ? 'required' : ''}
+            required={fieldData.required}
             date={getFieldValue(fieldName)}
             invalid={hasError}
             onChange={handleChange}
@@ -254,6 +258,8 @@ function StepField(props) {
               fieldName === 'country' &&
               <CountriesSelect
                 id={fieldId}
+                className={fieldData.required ? 'required' : ''}
+                required={fieldData.required}
                 value={getFieldValue(fieldName)}
                 invalid={hasError}
                 onChange={handleChange}
@@ -265,6 +271,8 @@ function StepField(props) {
               <CountriesSelect
                 id={fieldId}
                 value={getFieldValue(fieldName)}
+                className={fieldData.required ? 'required' : ''}
+                required={fieldData.required}
                 optionValue="alpha_code2"
                 optionLabel="nationality"
                 invalid={hasError}
@@ -276,6 +284,8 @@ function StepField(props) {
               id={fieldId}
               type="text"
               value={getFieldValue(fieldName)}
+              className={fieldData.required ? 'required' : ''}
+              required={fieldData.required}
               invalid={hasError}
               onChange={handleChange}
             />
@@ -307,6 +317,8 @@ function StepField(props) {
             <Input
               id={fieldId}
               type="textarea"
+              className={fieldData.required ? 'required' : ''}
+              required={fieldData.required}
               value={getFieldValue(fieldName)}
               invalid={hasError}
               onChange={handleChange}
@@ -322,7 +334,7 @@ function StepField(props) {
     return (
       <FormGroup>
         {getLabel()}
-        <InputGroup>
+        <InputGroup className={`${fieldData.required ? 'file-input-required' : ''} ${fieldData.status === null || fieldData.status === 'EMPTY' ? 'status-empty' : ''}`}>
           {
             modifying && fieldData.crypted && fieldData.status &&
             <InputGroupAddon addonType="prepend">
@@ -336,8 +348,9 @@ function StepField(props) {
           }
           <div className="custom-file">
             <input type="file"
-              className={'custom-file-input' + (loadState === 'error' || hasError ? ' is-invalid' : '')}
+              className={'custom-file-input' + (loadState === 'error' || hasError ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
               id={fieldName}
+              required={fieldData.required}
               data-field-name={`${groupName}.fields.${fieldName}`}
               disabled={loadState === 'loading'}
               onChange={handleFileSelect}

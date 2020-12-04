@@ -8,6 +8,7 @@ class SubscriptionStore {
   finalizingCount = 0;
   subscriptionRegistry = observable.map();
   fillStatus = null;
+  globalErrors = [];
   terms = false;
   modified = {};
   errors = {}
@@ -28,6 +29,14 @@ class SubscriptionStore {
     return this.subscriptionRegistry.get(id);
   }
 
+  setGlobalErrors(globalErrors) {
+    this.globalErrors = globalErrors;
+  }
+
+  getGlobalErrors() {
+    return this.globalErrors;
+  }
+
   setFillStatus(fillStatus) {
     this.fillStatus = fillStatus;
   }
@@ -40,8 +49,13 @@ class SubscriptionStore {
     return this.terms;
   }
 
+  isSubmitted(subscriptionId) {
+    return !!sessionStorage.getItem(`submitted-${subscriptionId}`);
+  }
+
   finalize(id, acceptedTerms) {
     this.finalizingCount++;
+    sessionStorage.setItem(`submitted-${id}`, true);
 
     return Subscriptions.finalize(id, { terms_accepted: acceptedTerms })
       .then(action(fillStatus => {
@@ -144,6 +158,7 @@ class SubscriptionStore {
   }
 
   patchSubscription(groupName, fieldsName = 'fields') {
+    this.setGlobalErrors(null);
     const subscriptionId = this.fillStatus.subscription_id;
     const data = {
       subscription_id: subscriptionId,
@@ -174,6 +189,7 @@ class SubscriptionStore {
     this.loadingCount++;
 
     this.resetFillStatus();
+    this.setGlobalErrors(null);
 
     return Subscriptions.getFillStatus(id)
       .then(action(fillStatus => {
@@ -193,12 +209,27 @@ class SubscriptionStore {
     return Subscriptions.uploadFile(this.fillStatus.subscription_id, fileName, fileBase64, fileType);
   }
 
+  patchPaymentStatus(subscriptionId, currencies) {
+      this.loadingCount++;
+
+      this.errors = {};
+
+      return Subscriptions.patchPaymentStatus(subscriptionId, currencies)
+        .then()
+        .catch(err => {
+          this.errors = err.response.body;
+        })
+        .finally(action(() => { this.loadingCount--; }))
+      ;
+    }
+
 }
 decorate(SubscriptionStore, {
   loadingCount: observable,
   finalizingCount: observable,
   subscriptionRegistry: observable,
   fillStatus: observable,
+  globalErrors: observable,
   terms: observable,
   modified: observable,
   loading: computed,
@@ -211,6 +242,7 @@ decorate(SubscriptionStore, {
   patchSubscription: action,
   loadFillStatus: action,
   resetFillStatus: action,
+  patchPaymentStatus: action,
 });
 
 export default new SubscriptionStore();

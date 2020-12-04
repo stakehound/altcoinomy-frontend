@@ -20,7 +20,12 @@ class ContributionStore {
     if (!data) {
       this.data = {
         tier: "tier1",
-        currencies: []
+        currencies: [{
+          id: this.currencyId,
+          currency_code: "",
+          amount: "",
+          address: "",
+        }]
       }
     }
   }

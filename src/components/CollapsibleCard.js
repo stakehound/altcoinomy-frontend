@@ -33,7 +33,6 @@ function CollapsibleCard(props) {
         if (fields[fieldName].hidden) {
           return sum;
         }
-
         return sum + (fields[fieldName].required && (fields[fieldName].status === 'EMPTY' || fields[fieldName].status === null));
       }, 0);
   }

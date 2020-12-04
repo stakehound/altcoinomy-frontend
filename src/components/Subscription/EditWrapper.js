@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { observer, inject } from 'mobx-react';
 import { Alert, Media, Spinner, Row, Col, Button } from 'reactstrap';
+import statusParser from '../../helpers/statusParser'
 import IcoLogo from '../IcoLogo';
 import Step1RegisterAs from '../Step/Step1RegisterAs';
 import Step2Individual from '../Step/Step2Individual';
@@ -16,12 +18,15 @@ import Step6VideoConference from '../Step/Step6VideoConference';
 import GlobalErrors from '../GlobalErrors';
 import moment from 'moment';
 import CustomInput from 'reactstrap/lib/CustomInput';
+import { Redirect } from 'react-router';
 
 function SubscriptionEditWrapper(props) {
   const { subscription, fillStatus, loading, SubscriptionStore, finalizing } = props;
+  const { globalErrors } = SubscriptionStore;
+  const terms = SubscriptionStore.getTerms();
   const [stepOpen, setStepOpen] = useState();
   const [shown, setShown] = useState();
-  const [globalErrors, setGlobalErrors] = useState();
+  //const [globalErrors, setGlobalErrors] = useState();
   const [successMessage, setSuccessMessage] = useState();
 
   const stepComponents = [
@@ -60,39 +65,9 @@ function SubscriptionEditWrapper(props) {
     );
   }
 
-
-  let subscriptionStatus = "";
-  switch (fillStatus.status) {
-    case "subscription_pending":
-      subscriptionStatus = <div className='badge badge-info'>Subscription pending</div>;
-      break;
-    case "subscription_submitted":
-      subscriptionStatus =  <div className='badge badge-warning'>Waiting for review</div>;
-      break;
-    case "subscription_onboarded":
-      subscriptionStatus = <div className='badge badge-success'>Onboarded</div>;
-      break;
-    case "subscription_to_be_fixed":
-      subscriptionStatus = <div className='badge badge-info'>Waiting your updates</div>;
-      break;
-    case "subscription_rejected":
-      subscriptionStatus = <div className='badge badge-danger'>KYC rejected</div>;
-      break;
-    case "subscription_to_report":
-      subscriptionStatus = <div className='badge badge-danger'>KYC rejected</div>;
-      break;
-    case "subscription_acknowledged":
-      subscriptionStatus = <div className='badge badge-success'>Subscription accepted</div>;
-      break;
-    case "subscription_auto_wait_worldcheck":
-      subscriptionStatus = <div className='badge badge-warning'>Verification pending</div>;
-      break;
-    default:
-      subscriptionStatus = subscription.status.replace("_", " ");
-      break;
+  function refreshPage() {
+    window.location.reload(false);
   }
-
-  const terms = SubscriptionStore.getTerms();
 
 
   return (
@@ -112,7 +87,7 @@ function SubscriptionEditWrapper(props) {
       <Row className="justify-content-md-between align-items-md-center">
         <Col xs="12" className="mb-12 mb-md-3 text-right">
           <strong>Status of your subscription: </strong>
-          {subscriptionStatus}
+          {statusParser(subscription.status)}
         </Col>
       </Row>
 
@@ -121,7 +96,7 @@ function SubscriptionEditWrapper(props) {
         <Row className="justify-content-md-between align-items-md-center">
           <Col xs="12" className="mb-12 mb-md-3 text-right">
             <strong>Video conference date: </strong>
-            <div className="badge badge-info">
+            <div className="badge badge-inf">
               {
                 moment(fillStatus.video_conference_date).format('DD/MM/YYYY HH:mm')
               }
@@ -130,24 +105,26 @@ function SubscriptionEditWrapper(props) {
         </Row>
       }
 
-      {stepComponents.map((Component, index) =>
-        <Component key={index}
-          subscription={subscription}
-          fillStatus={fillStatus}
-          stepOpen={stepOpen}
-          setStepOpen={setStepOpen}
-          shown={shown}
-          setShown={setShown}
-          ico={subscription.ico_subscribed[0].ico}
-        />)
-      }
+      <div className={`${subscription && SubscriptionStore.isSubmitted(subscription.id) ? 'subscription-submitted' : ''}`}>
+        {stepComponents.map((Component, index) =>
+          <Component key={index}
+            subscription={subscription}
+            fillStatus={fillStatus}
+            stepOpen={stepOpen}
+            setStepOpen={setStepOpen}
+            shown={shown}
+            setShown={setShown}
+            ico={subscription.ico_subscribed[0].ico}
+          />)
+        }
+      </div>
 
       <GlobalErrors errors={globalErrors}></GlobalErrors>
       {successMessage && <Alert color="success">{successMessage}</Alert>}
 
 
-      <Row className="justify-content-md-between align-items-md-center">
-        <Col xs="12" md={{ size: 'auto' }} className="mb-3 mb-md-4">
+      <Row className="justify-content-md-between align-items-md-end mb-4">
+        <Col xs="12" md={{ size: 'auto' }}>
           <CustomInput type="checkbox" id={'terms'}
             required={true}
             label="I have read the terms and conditions"
@@ -165,20 +142,31 @@ function SubscriptionEditWrapper(props) {
             disabled={finalizing}
             onClick={() => {
               setSuccessMessage(null);
-              setGlobalErrors(null);
+              //setGlobalErrors(null);
+              SubscriptionStore.setGlobalErrors(null);
               SubscriptionStore.finalize(subscription.id, terms)
                 .then(res => {
                   SubscriptionStore.setFillStatus(res);
                   setSuccessMessage("Thanks for your submission. You will be updated soon.");
+                  refreshPage();
                 })
                 .catch(err => {
-                  setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.")
+                  SubscriptionStore.setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.");
+                  //setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.")
                 });
-            }}
+            }
+          }
           >
-            {finalizing ? 'Submission in progress...' : 'Finalize my KYC'}
+            {finalizing ? 'Submission in progress...' : 'Next'}
           </Button>
         </Col>
+        {
+          subscription.status !== 'subscription_pending'
+          &&
+          <Col xs="12" md={{ size: 'auto' }} className="mt-3 mt-md-0">
+            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-primary w-100">Payment status</Link>
+          </Col>
+        }
       </Row>
     </>
   );

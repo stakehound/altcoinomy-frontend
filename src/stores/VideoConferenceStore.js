@@ -5,9 +5,19 @@ class VideoConferenceStore {
 
   loadingCount = 0;
   slotRegistry = [];
+  preferredLanguage = null;
 
   get loading() {
     return this.loadingCount > 0;
+  }
+
+  getPreferredLanguage() {
+    return this.preferredLanguage;
+  }
+
+  setPreferredLanguage(preferredLanguage) {
+    this.preferredLanguage = preferredLanguage;
+    return this;
   }
 
   get slots() {
@@ -37,24 +47,25 @@ class VideoConferenceStore {
         this.slotRegistry = slots;
       }))
       .finally(action(() => { this.loadingCount--; }))
-    ;
+      ;
   }
 
   bookSlot(slotId, subscriptionId) {
     this.loadingCount++;
 
-    return VideoConference.book(slotId, subscriptionId)
+    return VideoConference.book(slotId, subscriptionId, this.preferredLanguage)
       .then(action(res => {
         console.info('bookSlot', res);
       }))
       .finally(action(() => { this.loadingCount--; }))
-    ;
+      ;
   }
 
 }
 decorate(VideoConferenceStore, {
   loadingCount: observable,
   slotRegistry: observable,
+  preferredLanguage: observable,
   loading: computed,
   slots: computed,
   loadSlots: action,
