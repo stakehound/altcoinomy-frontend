@@ -70,7 +70,7 @@ function Header(props) {
 
   return (
     <Navbar color="light" light expand="md">
-      <NavbarBrand tag={Link} to="/"><img src="https://stakehound.com/wp-content/uploads/2020/09/logo-stakehound-1.png"/></NavbarBrand>
+      <NavbarBrand tag={Link} to="/subscription"><img src="https://stakehound.com/wp-content/uploads/2020/09/logo-stakehound-1.png"/></NavbarBrand>
 
       {props.CommonStore.appLoaded &&
         <>
