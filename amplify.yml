@@ -4,6 +4,7 @@ frontend:
     preBuild:
       commands:
         - npm install
+        - npm rebuild node-sass
     # IMPORTANT - Please verify your build commands
     build:
       commands: 
@@ -16,4 +17,4 @@ frontend:
       - '**/*'
   cache:
     paths: 
-      # - node_modules/**/*
+      - node_modules/**/*
