@@ -224,7 +224,8 @@ function StepField(props) {
 
           <DatePicker
             id={fieldId}
-            className={fieldData.required ? 'required' : ''}
+            className={`form-control ${fieldData.required ? 'required' : ''}`}
+            autoComplete="off"
             required={fieldData.required}
             date={getFieldValue(fieldName)}
             invalid={hasError}
