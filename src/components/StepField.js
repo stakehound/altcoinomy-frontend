@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormGroup, Label, InputGroup, InputGroupAddon, InputGroupText, Input, Spinner } from 'reactstrap';
 import CountriesSelect from './CountriesSelect';
@@ -221,11 +221,9 @@ function StepField(props) {
               Reset
             </InputGroupText>
           </InputGroupAddon>
-
           <DatePicker
             id={fieldId}
             className={`form-control ${fieldData.required ? 'required' : ''}`}
-            autoComplete="off"
             required={fieldData.required}
             date={getFieldValue(fieldName)}
             invalid={hasError}

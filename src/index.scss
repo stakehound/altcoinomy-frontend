@@ -113,6 +113,10 @@ label.required:after {
   }
 }
 
+.react-datepicker__triangle {
+  left: 50px !important;
+}
+
 .card.is-not-active,
 .list-group-item.is-not-active {
   background-image: repeating-linear-gradient(-45deg, transparent 0 20px, rgba(0, 0, 0, 0.05) 20px 40px);
