@@ -147,8 +147,8 @@ function ContributionForm(props) {
               <CurrencySelect
                 id={formId + 'currency_code'}
                 value={currency.currency_code}
-                fiat={data['tier'] ? tiersList[data['tier']].currencies.fiat : []}
-                crypto={data['tier'] ? tiersList[data['tier']].currencies.crypto : []}
+                fiat={data['tier'] && tiersList[data['tier']] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.fiat : []}
+                crypto={data['tier'] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.crypto : []}
                 invalid={ContributionStore.hasError(['currencies', index, 'currency_code'])}
                 onChange={ev => {
                   ContributionStore.setInvestment(currency, 'currency_code', ev.target.value);
