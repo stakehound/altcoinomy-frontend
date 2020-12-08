@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { FormGroup, Label, InputGroup, InputGroupAddon, InputGroupText, Input, Spinner } from 'reactstrap';
 import CountriesSelect from './CountriesSelect';

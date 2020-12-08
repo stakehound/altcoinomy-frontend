@@ -63,6 +63,7 @@ function SubscriptionEditWrapper(props) {
     );
   }
 
+
   return (
     <>
       <Media className="mb-3">
@@ -133,7 +134,7 @@ function SubscriptionEditWrapper(props) {
           >
             <span className="required"></span>
           </CustomInput>
-          <Button
+          {fillStatus.status !== 'subscription_submitted' && <Button
             className={`w-100 ${finalizing ? "loading" : ''}`}
             color="primary"
             disabled={finalizing}
@@ -152,13 +153,14 @@ function SubscriptionEditWrapper(props) {
             }}
           >
             {finalizing ? 'Submission in progress...' : 'Finalize my KYC'}
-          </Button>
+          </Button>}
+
         </Col>
         {
-          subscription.status !== 'subscription_pending'
+          fillStatus.status !== 'subscription_pending'
           &&
           <Col xs="12" md={{ size: 'auto' }} className="mt-3 mt-md-0">
-            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-outline-primary w-100">Payment status</Link>
+            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-outline-success w-100">Go to payment status page</Link>
           </Col>
         }
       </Row>
