@@ -125,24 +125,14 @@ function SubscriptionEditWrapper(props) {
 
       <Row className="justify-content-md-between align-items-md-end mb-4">
         <Col xs="12" md={{ size: 'auto' }}>
-          <CustomInput type="checkbox" id={'terms'}
-            required={true}
-            label="I have read the terms and conditions"
-            checked={terms}
-            onChange={(ev) => {
-              SubscriptionStore.setTerms(ev.target.checked);
-            }}
-            invalid={false}
-          >
-            <span className="required"></span>
-          </CustomInput>
-          <Button
+
+          {fillStatus.status !== 'subscription_submitted' && <Button
             className={`w-100 ${finalizing ? "loading" : ''}`}
             color="primary"
             disabled={finalizing}
             onClick={() => {
               setSuccessMessage(null);
-              //setGlobalErrors(null);
+              // setGlobalErrors(null);
               SubscriptionStore.setGlobalErrors(null);
               SubscriptionStore.finalize(subscription.id, terms)
                 .then(res => {
@@ -152,19 +142,17 @@ function SubscriptionEditWrapper(props) {
                 })
                 .catch(err => {
                   SubscriptionStore.setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.");
-                  //setGlobalErrors(err.response ? err.response.body : "Unknown error occurred. Please try again or contact us.")
                 });
-            }
-          }
+            }}
           >
-            {finalizing ? 'Submission in progress...' : 'Next'}
-          </Button>
+            {finalizing ? 'Submission in progress...' : 'Finalize my KYC'}
+          </Button>}
         </Col>
         {
           subscription.status !== 'subscription_pending'
           &&
           <Col xs="12" md={{ size: 'auto' }} className="mt-3 mt-md-0">
-            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-primary w-100">Payment status</Link>
+            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-success w-100">Go to payment status page</Link>
           </Col>
         }
       </Row>

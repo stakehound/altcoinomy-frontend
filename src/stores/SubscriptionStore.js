@@ -59,6 +59,8 @@ class SubscriptionStore {
 
     return Subscriptions.finalize(id, { terms_accepted: acceptedTerms })
       .then(action(fillStatus => {
+        this.fillStatus = fillStatus;
+        ContributionStore.setInitialData(this.fillStatus.groups.finalization.fields.contribution.value);
         return fillStatus;
       }))
       .catch(action(err => {
@@ -220,7 +222,7 @@ class SubscriptionStore {
           this.errors = err.response.body;
         })
         .finally(action(() => { this.loadingCount--; }))
-      ;
+        ;
     }
 
 }

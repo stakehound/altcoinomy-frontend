@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 registerLocale('en-GB', enGB);
 
 function DatePicker(props) {
-  const { id, className, dateFormat, date, invalid, onChange, fromToday, tillToday } = props;
+  const { id, className, dateFormat, date, invalid, onChange, fromToday, tillToday, required } = props;
   const dateFormatDefault = 'yyyy-MM-dd';
   const invalidClassName = ' is-invalid';
   const limit = {};
@@ -29,13 +29,15 @@ function DatePicker(props) {
   return (
     <ReactDatePicker
       id={id || null}
+      required={required}
+      autoComplete="off"
       className={classNameNew}
       wrapperClassName={invalid ? invalidClassName : null}
       dateFormat={dateFormat || dateFormatDefault}
       selected={date ? parseISO(date) : null}
       onChange={date => {
         const dateTxt = date ? format(date, dateFormat || dateFormatDefault) : '';
-        
+
         onChange(dateTxt);
       }}
       locale="en-GB"

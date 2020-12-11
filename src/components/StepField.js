@@ -221,10 +221,9 @@ function StepField(props) {
               Reset
             </InputGroupText>
           </InputGroupAddon>
-
           <DatePicker
             id={fieldId}
-            className={fieldData.required ? 'required' : ''}
+            className={`form-control ${fieldData.required ? 'required' : ''}`}
             required={fieldData.required}
             date={getFieldValue(fieldName)}
             invalid={hasError}
