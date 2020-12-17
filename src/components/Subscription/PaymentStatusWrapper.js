@@ -29,9 +29,11 @@ function SubscriptionPaymentStatusWrapper(props) {
       fiat: null,
       crypto: null
     };
+    const investmentPotential = subscription ? subscription.ico_subscribed[0].ico.investment_potential.filter(potential => potential.tier.toUpperCase() === subscription.ico_subscribed[0].tier.toUpperCase())[0] : null;
 
     if (subscription && subscription.ico_subscribed[0].investment.fiat && subscription.ico_subscribed[0].investment.fiat.currency) {
       formData.fiat = {
+        info: investmentPotential.currencies_fiat.filter(fiat => fiat.currency.code === subscription.ico_subscribed[0].investment.fiat.currency)[0].info,
         currency: subscription.ico_subscribed[0].investment.fiat.currency,
         init_status: subscription.ico_subscribed[0].investment.fiat.payment,
         status: subscription.ico_subscribed[0].investment.fiat.payment,
@@ -45,6 +47,7 @@ function SubscriptionPaymentStatusWrapper(props) {
       formData.crypto = subscription.ico_subscribed[0].investment.cryptos
         .map(crypto => {
           return {
+            info: investmentPotential.currencies_crypto.filter(cryptoCurrency => cryptoCurrency.currency.code === crypto.currency.value)[0].info,
             currency: crypto.currency.value,
             init_status: crypto.payment,
             status: crypto.payment,
@@ -61,7 +64,7 @@ function SubscriptionPaymentStatusWrapper(props) {
   }, [subscription]);
 
   // form data changed
-  // prepare currencies object ot update subscription
+  // prepare currencies object to update subscription
   // prepare isModified state
   useEffect(() => {
     const currenciesData = {
@@ -170,6 +173,11 @@ function SubscriptionPaymentStatusWrapper(props) {
         <Row className="mb-4">
           <Col xs="12">
             <h3 className="font-weight-light">Account details to transfer your funds in <span className="font-weight-bold">{formData.fiat.currency}</span></h3>
+            {
+              formData.fiat.info
+              &&
+              <Label>{formData.fiat.info}</Label>
+            }
             <FormGroup>
               <CustomInput inline type="radio" name={`payment_status_${formData.fiat.currency}`} label="Not paid yet" id={`payment_status_${formData.fiat.currency}_to_be_checked`} value="status.to_be_checked" checked={formData.fiat.status === 'status.to_be_checked'} onChange={ev => {updateFormData('fiat', formData.fiat.currency, 'status', ev.target.value)}} />
               <CustomInput inline type="radio" name={`payment_status_${formData.fiat.currency}`} label="Notify that I made the payment" id={`payment_status_${formData.fiat.currency}_announced`} value="status.announced" checked={formData.fiat.status === 'status.announced'} onChange={ev => {updateFormData('fiat', formData.fiat.currency, 'status', ev.target.value)}} />
@@ -228,6 +236,11 @@ function SubscriptionPaymentStatusWrapper(props) {
           <Row key={cryptoCurrency} className="mb-4">
             <Col xs="12">
               <h3 className="font-weight-light">Account details to transfer your funds in <span className="font-weight-bold">{cryptoCurrency}</span></h3>
+              {
+                formData.crypto[cryptoCurrency].info
+                &&
+                <Label>{formData.crypto[cryptoCurrency].info}</Label>
+              }
               <FormGroup>
                 <CustomInput inline type="radio" name={`payment_status_${cryptoCurrency}`} label="Not paid yet" id={`payment_status_${cryptoCurrency}_to_be_checked`} value="status.to_be_checked" checked={formData.crypto[cryptoCurrency].status === 'status.to_be_checked'} onChange={ev => {updateFormData('crypto', cryptoCurrency, 'status', ev.target.value)}} />
                 <CustomInput inline type="radio" name={`payment_status_${cryptoCurrency}`} label="Notify that I made the payment" id={`payment_status_${cryptoCurrency}_announced`} value="status.announced" checked={formData.crypto[cryptoCurrency].status === 'status.announced'} onChange={ev => {updateFormData('crypto', cryptoCurrency, 'status', ev.target.value)}} />
