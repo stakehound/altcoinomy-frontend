@@ -125,7 +125,18 @@ function SubscriptionEditWrapper(props) {
 
       <Row className="justify-content-md-between align-items-md-end mb-4">
         <Col xs="12" md={{ size: 'auto' }}>
-
+        <CustomInput type="checkbox" id={'terms'}
+            required={true}
+            className="required"
+            label="I have read the terms and conditions"
+            checked={terms}
+            onChange={(ev) => {
+              SubscriptionStore.setTerms(ev.target.checked);
+            }}
+            invalid={false}
+          >
+            <span className="required"></span>
+          </CustomInput>
           {fillStatus.status !== 'subscription_submitted' && <Button
             className={`w-100 ${finalizing ? "loading" : ''}`}
             color="primary"
