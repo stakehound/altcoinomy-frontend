@@ -84,7 +84,7 @@ label.required:after {
   &.is-invalid {
     border-color: $form-feedback-invalid-color;
 
-    &~div .invalid-feedback {
+    &~div .invalid-feedback, &~div .valid-feedback {
       display: block;
     }
   }
@@ -98,7 +98,7 @@ label.required:after {
   display: block;
 
   &.is-invalid {
-    &+.invalid-feedback {
+    &+.invalid-feedback, &+.valid-feedback {
       display: block;
     }
   }
@@ -127,7 +127,7 @@ label.required:after {
   }
 }
 
-.invalid-feedback {
+.invalid-feedback, .valid-feedback {
   display: block;
 }
 
@@ -161,6 +161,10 @@ label.required:after {
     }
   }
 
+}
+
+.valid-feedback {
+  color: $green;
 }
 
 iframe.video-conference {

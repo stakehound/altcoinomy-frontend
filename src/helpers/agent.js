@@ -121,8 +121,13 @@ const Subscriptions = {
     requests.patch(`/subscriptions/${id}`, data),
   getFillStatus: (id) =>
     requests.get(`/subscriptions/${id}/fill-status`),
-  uploadFile: (id, filename, file, type) =>
-    requests.post(`/subscriptions/${id}/files`, { filename, file, type }),
+  uploadFile: (id, filename, file, type, iHaveNoMrz) => {
+    let data = { filename, file, type };
+    if (iHaveNoMrz) {
+      data.no_mrz_uploaded = true;
+    }
+    return requests.post(`/subscriptions/${id}/files`, data)
+  },
   extraDocument: (id, documentId, data) =>
     requests.post(`/subscriptions/${id}/extra-document/${documentId}`, data),
   finalize: (id, data) =>

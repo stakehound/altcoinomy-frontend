@@ -4,14 +4,19 @@ import { FormGroup, Label, InputGroup, InputGroupAddon, InputGroupText, Input, S
 import CountriesSelect from './CountriesSelect';
 import DatePicker from './DatePicker';
 import FieldErrors from './FieldErrors';
+import Row from 'reactstrap/lib/Row';
+import Col from 'reactstrap/lib/Col';
+import CustomInput from 'reactstrap/lib/CustomInput';
 
 function StepField(props) {
-  const { SubscriptionStore, groupName, fieldName, fieldData } = props;
+  const { SubscriptionStore, groupName, fieldName, fieldData, subscription } = props;
   const fieldId = groupName + '_' + fieldName;
   const [modifying, setModifying] = useState(false);
   const [loadState, setLoadState] = useState('pending');
   const loadErrorDefault = 'An error occurred, please try again';
   const [loadError, setLoadError] = useState(loadErrorDefault);
+  const iHaveNoMrz = SubscriptionStore.getIHaveNoMrz();
+  const mrzError = SubscriptionStore.getMrzError();
 
   const { errors } = SubscriptionStore;
   const hasError = SubscriptionStore.hasFieldError(`${groupName}.fields.${fieldName}`);
@@ -79,14 +84,19 @@ function StepField(props) {
     reader.onload = () => {
       const fileBase64 = reader.result.split(',')[1];
 
-      SubscriptionStore.uploadFile(fileName, fileBase64, fileType)
+      SubscriptionStore.uploadFile(fileName, fileBase64, fileType, iHaveNoMrz)
         .then(res => {
           SubscriptionStore.setModified(groupName, fieldName, res.id);
           if (res && res.identt_error && res.identt_error instanceof Array) {
             let identtError = "";
+            let mrzError = false;
             switch (res.identt_error[0]) {
               case "not_recognized":
                 identtError = "This ID can't be recognized. Ensure that it contains an MRZ and that the quality is sufficient";
+                mrzError = true;
+                break;
+              case "too_low_resolution":
+                identtError = "The resolution of this picture is too low. Please upload a higher resolution one.";
                 break;
               case "unable_to_certify_document":
               case "document_not_certified":
@@ -99,7 +109,7 @@ function StepField(props) {
                 identtError = res.identt_error;
                 break;
             }
-            SubscriptionStore.addFieldError(fullFieldName, identtError);
+            SubscriptionStore.addFieldError(fullFieldName, identtError, mrzError);
           }
           setLoadState('done');
         })
@@ -330,7 +340,7 @@ function StepField(props) {
   }
 
   if (fieldData.type === 'id') {
-    return (
+    return (<>
       <FormGroup>
         {getLabel()}
         <InputGroup className={`${fieldData.required ? 'file-input-required' : ''} ${fieldData.status === null || fieldData.status === 'EMPTY' ? 'status-empty' : ''}`}>
@@ -347,7 +357,7 @@ function StepField(props) {
           }
           <div className="custom-file">
             <input type="file"
-              className={'custom-file-input' + (loadState === 'error' || hasError ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
+              className={'custom-file-input' + (loadState === 'error' || hasError && !(mrzError && iHaveNoMrz) ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
               id={fieldName}
               required={fieldData.required}
               data-field-name={`${groupName}.fields.${fieldName}`}
@@ -366,9 +376,30 @@ function StepField(props) {
               }
             </label>
           </div>
-          <FieldErrors errors={errors} field={`${groupName}.fields.${fieldName}`} />
+          { fieldName == 'id_card_front' && mrzError && iHaveNoMrz 
+            ? <div className="valid-feedback">Your document will be manually checked.</div>
+            : <FieldErrors errors={errors} field={`${groupName}.fields.${fieldName}`} />
+          }
         </InputGroup>
       </FormGroup>
+      {fieldName == 'id_card_front' && mrzError && subscription && subscription.ico_subscribed && subscription.ico_subscribed[0].ico.authorize_no_mrz_id &&
+        <Row className="justify-content-md-between align-items-md-end mb-4">
+          <Col xs="12" md={{ size: 'auto' }}>
+            <CustomInput type="checkbox" id={'iHaveNoMrz'}
+              required={true}
+              className="required"
+              label="If your ID does not have an MRZ id, please check this box. Note that the processing of your KYC can be longer if you activate this checkbox."
+              checked={iHaveNoMrz}
+              onChange={(ev) => {
+                SubscriptionStore.setIHaveNoMrz(ev.target.checked);
+              }}
+              invalid={false}
+            >
+            </CustomInput>
+          </Col>
+        </Row>
+      }
+    </>
     );
   }
 

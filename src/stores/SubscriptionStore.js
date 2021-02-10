@@ -11,7 +11,9 @@ class SubscriptionStore {
   globalErrors = [];
   terms = false;
   modified = {};
-  errors = {}
+  errors = {};
+  mrzError = false;
+  iHaveNoMrz = false;
 
   get loading() {
     return this.loadingCount > 0;
@@ -47,6 +49,22 @@ class SubscriptionStore {
 
   getTerms() {
     return this.terms;
+  }
+  
+  setIHaveNoMrz(iHaveNoMrz) {
+    this.iHaveNoMrz = iHaveNoMrz;
+  }
+
+  getIHaveNoMrz() {
+    return this.iHaveNoMrz;
+  }
+  
+  setMrzError(mrzError) {
+    this.mrzError = mrzError;
+  }
+
+  getMrzError() {
+    return this.mrzError;
   }
 
   isSubmitted(subscriptionId) {
@@ -148,11 +166,12 @@ class SubscriptionStore {
     }
   }
 
-  addFieldError(field, error) {
+  addFieldError(field, error, mrzError) {
     if (this.errors && !this.errors.fields) {
       this.errors.fields = {};
     }
     this.errors.fields[field] = error;
+    this.mrzError = mrzError;
   }
 
   hasFieldError(field) {
@@ -207,8 +226,8 @@ class SubscriptionStore {
     this.modified = {};
   }
 
-  uploadFile(fileName, fileBase64, fileType) {
-    return Subscriptions.uploadFile(this.fillStatus.subscription_id, fileName, fileBase64, fileType);
+  uploadFile(fileName, fileBase64, fileType, iHaveNoMrz) {
+    return Subscriptions.uploadFile(this.fillStatus.subscription_id, fileName, fileBase64, fileType, iHaveNoMrz);
   }
 
   patchPaymentStatus(subscriptionId, currencies) {
@@ -233,6 +252,7 @@ decorate(SubscriptionStore, {
   fillStatus: observable,
   globalErrors: observable,
   terms: observable,
+  iHaveNoMrz: observable,
   modified: observable,
   loading: computed,
   subscriptions: computed,
