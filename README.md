@@ -53,3 +53,10 @@ A bootstrap demo is available in the `samples/bootstrap-integration` folder. If 
 
 > Note: If you want to change the URL you just need to edit the `samples/bootstrap-integration/index.html` file and change the iframe target.
 
+
+## Referral management
+
+If you need to pass some referal to your page in order to feed the customer referral tag, you can use the following :
+[http://localhost:3000/?referral=my-tag](http://localhost:3000/?referral=my-tag).
+
+Note that the referal will be stored in the sessionStorage and any user registering after using this link will get the referal fed in the customer object.
