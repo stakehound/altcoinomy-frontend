@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { Container, Col, Row, Spinner } from 'reactstrap';
 import Header from './Header'
@@ -11,9 +11,18 @@ import Login from '../pages/Login';
 import Home from '../pages/Home';
 import Subscription from '../pages/Subscription';
 
+const urlParams = new URLSearchParams(window.location.search);
+const referral = urlParams.get("referral");
+if (referral) {
+  sessionStorage.setItem("referral", referral);
+  window.history.pushState({}, null, "/" + window.location.hash);
+}
+
 function App(props) {
   const { CommonStore, CustomerStore } = props;
   const history = useHistory();
+
+  
 
   useEffect(() => {
     document.title = CommonStore.appName;
@@ -61,4 +70,4 @@ function App(props) {
   );
 }
 
-export default inject('CommonStore', 'CustomerStore')(observer(App));
+export default withRouter(inject('CommonStore', 'CustomerStore')(observer(App)));

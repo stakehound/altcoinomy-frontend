@@ -60,8 +60,13 @@ const requests = {
 };
 
 const Accounts = {
-  register: (username, email, plainPassword) =>
-    requests.post('/register', { username, email, plainPassword, telephone: '', confirmBy: 'email' }),
+  register: (username, email, plainPassword) =>{
+    let data = { username, email, plainPassword, telephone: '', confirmBy: 'email' };
+    if (window.sessionStorage.getItem('referral')) {
+      data.referal = window.sessionStorage.getItem('referral');
+    }
+    return requests.post('/register', data);
+  },
   validate: (code) =>
     requests.post('/validate', { code }),
   validateResend: (email) =>

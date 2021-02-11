@@ -357,7 +357,7 @@ function StepField(props) {
           }
           <div className="custom-file">
             <input type="file"
-              className={'custom-file-input' + (loadState === 'error' || hasError && !(mrzError && iHaveNoMrz) ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
+              className={'custom-file-input' + ((loadState === 'error' || hasError) && !(mrzError && iHaveNoMrz) ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
               id={fieldName}
               required={fieldData.required}
               data-field-name={`${groupName}.fields.${fieldName}`}
@@ -376,13 +376,13 @@ function StepField(props) {
               }
             </label>
           </div>
-          { fieldName == 'id_card_front' && mrzError && iHaveNoMrz 
+          { fieldName === 'id_card_front' && mrzError && iHaveNoMrz 
             ? <div className="valid-feedback">Your document will be manually checked.</div>
             : <FieldErrors errors={errors} field={`${groupName}.fields.${fieldName}`} />
           }
         </InputGroup>
       </FormGroup>
-      {fieldName == 'id_card_front' && mrzError && subscription && subscription.ico_subscribed && subscription.ico_subscribed[0].ico.authorize_no_mrz_id &&
+      {fieldName === 'id_card_front' && mrzError && subscription && subscription.ico_subscribed && subscription.ico_subscribed[0].ico.authorize_no_mrz_id &&
         <Row className="justify-content-md-between align-items-md-end mb-4">
           <Col xs="12" md={{ size: 'auto' }}>
             <CustomInput type="checkbox" id={'iHaveNoMrz'}
