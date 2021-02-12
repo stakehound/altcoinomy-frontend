@@ -25,7 +25,7 @@
   display: none;
 }
 
-.custom-checkbox.custom-control>span.required:after,
+.custom-checkbox.custom-control > span.required:after,
 label.required:after {
   content: "*";
   display: inline-block;
@@ -47,15 +47,15 @@ label.required:after {
         cursor: pointer;
 
         &.status-FILLED {
-          @include crypted-status-variant('warning');
+          @include crypted-status-variant("warning");
         }
 
         &.status-REFUSED {
-          @include crypted-status-variant('danger');
+          @include crypted-status-variant("danger");
         }
 
         &.status-ACCEPTED {
-          @include crypted-status-variant('success');
+          @include crypted-status-variant("success");
         }
       }
     }
@@ -84,7 +84,8 @@ label.required:after {
   &.is-invalid {
     border-color: $form-feedback-invalid-color;
 
-    &~div .invalid-feedback, &~div .valid-feedback {
+    & ~ div .invalid-feedback,
+    & ~ div .valid-feedback {
       display: block;
     }
   }
@@ -98,12 +99,13 @@ label.required:after {
   display: block;
 
   &.is-invalid {
-    &+.invalid-feedback, &+.valid-feedback {
+    & + .invalid-feedback,
+    & + .valid-feedback {
       display: block;
     }
   }
 
-  .input-group>& {
+  .input-group > & {
     flex: 1 1 auto;
 
     & .form-control {
@@ -127,7 +129,8 @@ label.required:after {
   }
 }
 
-.invalid-feedback, .valid-feedback {
+.invalid-feedback,
+.valid-feedback {
   display: block;
 }
 
@@ -146,7 +149,9 @@ label.required:after {
 }
 
 .subscription-submitted {
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     &.required {
       &:invalid {
         border: 1px solid red;
@@ -160,7 +165,6 @@ label.required:after {
       border-radius: 4px;
     }
   }
-
 }
 
 .valid-feedback {
@@ -173,4 +177,9 @@ iframe.video-conference {
   height: 70vh;
   border: $input-border-width solid $input-border-color;
   @include border-radius($input-border-radius, 0);
+}
+
+.img-100 {
+  width: 100%;
+  display: block;
 }

@@ -60,7 +60,7 @@ const requests = {
 };
 
 const Accounts = {
-  register: (username, email, plainPassword) =>{
+  register: (username, email, plainPassword) => {
     let data = { username, email, plainPassword, telephone: '', confirmBy: 'email' };
     if (window.sessionStorage.getItem('referral')) {
       data.referal = window.sessionStorage.getItem('referral');
@@ -132,6 +132,12 @@ const Subscriptions = {
       data.no_mrz_uploaded = true;
     }
     return requests.post(`/subscriptions/${id}/files`, data)
+  },
+  patchFile: (id, iHaveNoMrz) => {
+    let data = {
+      "no_mrz_uploaded": !!iHaveNoMrz
+    };
+    return requests.patch(`/file/${id}`, data)
   },
   extraDocument: (id, documentId, data) =>
     requests.post(`/subscriptions/${id}/extra-document/${documentId}`, data),

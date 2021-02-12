@@ -17,6 +17,7 @@ function StepField(props) {
   const [loadError, setLoadError] = useState(loadErrorDefault);
   const iHaveNoMrz = SubscriptionStore.getIHaveNoMrz();
   const mrzError = SubscriptionStore.getMrzError();
+  const idFileId = SubscriptionStore.getIdFileId();
 
   const { errors } = SubscriptionStore;
   const hasError = SubscriptionStore.hasFieldError(`${groupName}.fields.${fieldName}`);
@@ -92,7 +93,7 @@ function StepField(props) {
             let mrzError = false;
             switch (res.identt_error[0]) {
               case "not_recognized":
-                identtError = "This ID can't be recognized. Ensure that it contains an MRZ and that the quality is sufficient";
+                identtError = "This ID can't be recognized. Please ensure that it contains an MRZ and that quality and resolution are high enough.";
                 mrzError = true;
                 break;
               case "too_low_resolution":
@@ -109,7 +110,7 @@ function StepField(props) {
                 identtError = res.identt_error;
                 break;
             }
-            SubscriptionStore.addFieldError(fullFieldName, identtError, mrzError);
+            SubscriptionStore.addFieldError(fullFieldName, identtError, mrzError, res.id);
           }
           setLoadState('done');
         })
@@ -127,15 +128,27 @@ function StepField(props) {
     reader.readAsDataURL(file);
   }
 
+  /**
+   * Here you can override the label returned by the API if you want to customize the message.
+   */
   function getLabel() {
-    return <Label for={fieldId} className={fieldData.required ? 'required' : ''}>{fieldData.description}</Label>;
+    let description = "";
+    switch (fieldName) {
+      case "id_card_front":
+        description = "Identity Document: side/page with Machine-readable Zone (MRZ)";
+        break;
+      default:
+        description = fieldData.description;
+        break;
+    }
+    return <Label for={fieldId} className={fieldData.required ? 'required' : ''}>{description}</Label>;
   }
 
   if (fieldData.hidden) {
     return null;
   }
 
-  if (!modifying && fieldData.crypted && fieldData.status && fieldData.status !== 'EMPTY') {
+  if (!modifying && fieldData.crypted && fieldData.status && fieldData.status !== 'EMPTY' && !mrzError) {
     return (
       <FormGroup>
         {getLabel()}
@@ -342,6 +355,7 @@ function StepField(props) {
   if (fieldData.type === 'id') {
     return (<>
       <FormGroup>
+        {fieldName === 'id_card_front' && <img alt="MRZ example" src="/Passport_2_main_pages_sample_and_Id_with_MRZ.png" />}
         {getLabel()}
         <InputGroup className={`${fieldData.required ? 'file-input-required' : ''} ${fieldData.status === null || fieldData.status === 'EMPTY' ? 'status-empty' : ''}`}>
           {
@@ -376,22 +390,23 @@ function StepField(props) {
               }
             </label>
           </div>
-          { fieldName === 'id_card_front' && mrzError && iHaveNoMrz 
+          {fieldName === 'id_card_front' && mrzError && iHaveNoMrz
             ? <div className="valid-feedback">Your document will be manually checked.</div>
             : <FieldErrors errors={errors} field={`${groupName}.fields.${fieldName}`} />
           }
         </InputGroup>
       </FormGroup>
+
       {fieldName === 'id_card_front' && mrzError && subscription && subscription.ico_subscribed && subscription.ico_subscribed[0].ico.authorize_no_mrz_id &&
         <Row className="justify-content-md-between align-items-md-end mb-4">
           <Col xs="12" md={{ size: 'auto' }}>
             <CustomInput type="checkbox" id={'iHaveNoMrz'}
               required={true}
               className="required"
-              label="If your ID does not have an MRZ id, please check this box. Note that the processing of your KYC can be longer if you activate this checkbox."
+              label="If your ID does not have an MRZ or isn't recognized, please check this box. Please note that the processing of your file will take longer."
               checked={iHaveNoMrz}
               onChange={(ev) => {
-                SubscriptionStore.setIHaveNoMrz(ev.target.checked);
+                SubscriptionStore.setIHaveNoMrz(idFileId, ev.target.checked);
               }}
               invalid={false}
             >

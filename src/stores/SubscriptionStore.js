@@ -13,6 +13,7 @@ class SubscriptionStore {
   modified = {};
   errors = {};
   mrzError = false;
+  idFileId = null;
   iHaveNoMrz = false;
 
   get loading() {
@@ -50,21 +51,31 @@ class SubscriptionStore {
   getTerms() {
     return this.terms;
   }
-  
-  setIHaveNoMrz(iHaveNoMrz) {
-    this.iHaveNoMrz = iHaveNoMrz;
+
+  setIHaveNoMrz(fileId, iHaveNoMrz) {
+    Subscriptions.patchFile(fileId, iHaveNoMrz).then(() => {
+      this.iHaveNoMrz = iHaveNoMrz;
+    }).catch(() => { });
   }
 
   getIHaveNoMrz() {
     return this.iHaveNoMrz;
   }
-  
+
   setMrzError(mrzError) {
     this.mrzError = mrzError;
   }
 
   getMrzError() {
     return this.mrzError;
+  }
+
+  setIdFileId(idFileId) {
+    this.idFileId = idFileId;
+  }
+
+  getIdFileId() {
+    return this.idFileId;
   }
 
   isSubmitted(subscriptionId) {
@@ -166,12 +177,13 @@ class SubscriptionStore {
     }
   }
 
-  addFieldError(field, error, mrzError) {
+  addFieldError(field, error, mrzError, idFileId) {
     if (this.errors && !this.errors.fields) {
       this.errors.fields = {};
     }
     this.errors.fields[field] = error;
     this.mrzError = mrzError;
+    this.idFileId = idFileId;
   }
 
   hasFieldError(field) {
@@ -198,6 +210,8 @@ class SubscriptionStore {
       .then(action(fillStatus => {
         this.resetFillStatus();
         this.fillStatus = fillStatus;
+        this.mrzError = false;
+        this.idFileId = null;
       }))
       .catch(err => {
         this.errors = err.response.body;
