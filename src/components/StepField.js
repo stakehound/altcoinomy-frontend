@@ -403,7 +403,7 @@ function StepField(props) {
             <CustomInput type="checkbox" id={'iHaveNoMrz'}
               required={true}
               className="required"
-              label="If your ID does not have an MRZ or isn't recognized, please check this box. Please note that the processing of your file will take longer."
+              label="Your identity document wasn't recognized. Please re-upload it, or check this box to apply for manual verification."
               checked={iHaveNoMrz}
               onChange={(ev) => {
                 SubscriptionStore.setIHaveNoMrz(idFileId, ev.target.checked);
