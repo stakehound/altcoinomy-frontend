@@ -88,13 +88,13 @@ function StepField(props) {
       SubscriptionStore.uploadFile(fileName, fileBase64, fileType, iHaveNoMrz)
         .then(res => {
           SubscriptionStore.setModified(groupName, fieldName, res.id);
+          let mrzError = false;
           if (res && res.identt_error && res.identt_error instanceof Array) {
             let identtError = "";
-            let mrzError = false;
+            mrzError = true
             switch (res.identt_error[0]) {
               case "not_recognized":
                 identtError = "This ID can't be recognized. Please ensure that it contains an MRZ and that quality and resolution are high enough.";
-                mrzError = true;
                 break;
               case "too_low_resolution":
                 identtError = "The resolution of this picture is too low. Please upload a higher resolution one.";
