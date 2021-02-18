@@ -7,7 +7,7 @@ import { asyncSessionStorage } from '../../helpers/sessionStorage';
 
 function Step2Individual(props) {
   const groupName = 'individual';
-  const { SubscriptionStore, fillStatus, ...otherProps } = props;
+  const { SubscriptionStore, fillStatus, subscription,  ...otherProps } = props;
   const { header, fields } = fillStatus.groups[groupName];
 
   if (!header.required) {
@@ -29,6 +29,7 @@ function Step2Individual(props) {
               groupName={groupName}
               fieldName={fieldName}
               fieldData={fields[fieldName]}
+              subscription={subscription}
             />
           );
         })

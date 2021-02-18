@@ -7,7 +7,7 @@ import { asyncSessionStorage } from '../../helpers/sessionStorage';
 
 function Step2Company(props) {
   const groupName = 'company';
-  const { SubscriptionStore, fillStatus, ...otherProps } = props;
+  const { SubscriptionStore, fillStatus, subscription, ...otherProps } = props;
   const { header, fields } = fillStatus.groups[groupName];
 
   if (!header.required) {
@@ -17,6 +17,7 @@ function Step2Company(props) {
   return (
     <CollapsibleCard
       active={header.active}
+      subscription={subscription}
       name={groupName}
       fields={header.active ? fields : null}
       header="Personal details"
@@ -29,6 +30,7 @@ function Step2Company(props) {
               groupName={groupName}
               fieldName={fieldName}
               fieldData={fields[fieldName]}
+              subscription={subscription}
             />
           );
         })

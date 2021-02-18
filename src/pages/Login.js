@@ -41,7 +41,7 @@ function Login(props) {
 
           <Form onSubmit={handleSubmitForm}>
             <FormGroup>
-              <Input type="text" placeholder="Email" bsSize="lg" value={values.username} onChange={handleUsernameChange}></Input>
+              <Input type="text" placeholder="Email or Username" bsSize="lg" value={values.username} onChange={handleUsernameChange}></Input>
             </FormGroup>
             <FormGroup>
               <Input type="password" placeholder="Password" bsSize="lg" value={values.password} onChange={handlePasswordChange}></Input>

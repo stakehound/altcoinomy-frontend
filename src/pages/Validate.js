@@ -19,7 +19,7 @@ function Validate(props) {
     e.preventDefault();
 
     AccountStore.validate()
-      .then(() => history.replace('/'))
+      .then(() => history.replace('/subscription'))
       .catch(err => {
         if (err && err.response && err.response.status === 401) {
           history.replace('/')

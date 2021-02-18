@@ -60,8 +60,13 @@ const requests = {
 };
 
 const Accounts = {
-  register: (username, email, plainPassword) =>
-    requests.post('/register', { username, email, plainPassword, telephone: '', confirmBy: 'email' }),
+  register: (username, email, plainPassword) => {
+    let data = { username, email, plainPassword, telephone: '', confirmBy: 'email' };
+    if (window.sessionStorage.getItem('referral')) {
+      data.referal = window.sessionStorage.getItem('referral');
+    }
+    return requests.post('/register', data);
+  },
   validate: (code) =>
     requests.post('/validate', { code }),
   validateResend: (email) =>
@@ -121,8 +126,19 @@ const Subscriptions = {
     requests.patch(`/subscriptions/${id}`, data),
   getFillStatus: (id) =>
     requests.get(`/subscriptions/${id}/fill-status`),
-  uploadFile: (id, filename, file, type) =>
-    requests.post(`/subscriptions/${id}/files`, { filename, file, type }),
+  uploadFile: (id, filename, file, type, iHaveNoMrz) => {
+    let data = { filename, file, type };
+    if (iHaveNoMrz) {
+      data.no_mrz_uploaded = true;
+    }
+    return requests.post(`/subscriptions/${id}/files`, data)
+  },
+  patchFile: (id, iHaveNoMrz) => {
+    let data = {
+      "no_mrz_uploaded": !!iHaveNoMrz
+    };
+    return requests.patch(`/file/${id}`, data)
+  },
   extraDocument: (id, documentId, data) =>
     requests.post(`/subscriptions/${id}/extra-document/${documentId}`, data),
   finalize: (id, data) =>

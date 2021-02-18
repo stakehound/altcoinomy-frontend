@@ -4,14 +4,20 @@ import { FormGroup, Label, InputGroup, InputGroupAddon, InputGroupText, Input, S
 import CountriesSelect from './CountriesSelect';
 import DatePicker from './DatePicker';
 import FieldErrors from './FieldErrors';
+import Row from 'reactstrap/lib/Row';
+import Col from 'reactstrap/lib/Col';
+import CustomInput from 'reactstrap/lib/CustomInput';
 
 function StepField(props) {
-  const { SubscriptionStore, groupName, fieldName, fieldData } = props;
+  const { SubscriptionStore, groupName, fieldName, fieldData, subscription } = props;
   const fieldId = groupName + '_' + fieldName;
   const [modifying, setModifying] = useState(false);
   const [loadState, setLoadState] = useState('pending');
   const loadErrorDefault = 'An error occurred, please try again';
   const [loadError, setLoadError] = useState(loadErrorDefault);
+  const iHaveNoMrz = SubscriptionStore.getIHaveNoMrz();
+  const mrzError = SubscriptionStore.getMrzError();
+  const idFileId = SubscriptionStore.getIdFileId();
 
   const { errors } = SubscriptionStore;
   const hasError = SubscriptionStore.hasFieldError(`${groupName}.fields.${fieldName}`);
@@ -79,14 +85,19 @@ function StepField(props) {
     reader.onload = () => {
       const fileBase64 = reader.result.split(',')[1];
 
-      SubscriptionStore.uploadFile(fileName, fileBase64, fileType)
+      SubscriptionStore.uploadFile(fileName, fileBase64, fileType, iHaveNoMrz)
         .then(res => {
           SubscriptionStore.setModified(groupName, fieldName, res.id);
+          let mrzError = false;
           if (res && res.identt_error && res.identt_error instanceof Array) {
             let identtError = "";
+            mrzError = true;
             switch (res.identt_error[0]) {
               case "not_recognized":
-                identtError = "This ID can't be recognized. Ensure that it contains an MRZ and that the quality is sufficient";
+                identtError = "This ID can't be recognized. Please ensure that it contains an MRZ and that the quality and resolution are high enough.";
+                break;
+              case "too_low_resolution":
+                identtError = "The resolution of this picture is too low. Please upload a higher resolution one.";
                 break;
               case "unable_to_certify_document":
               case "document_not_certified":
@@ -99,7 +110,7 @@ function StepField(props) {
                 identtError = res.identt_error;
                 break;
             }
-            SubscriptionStore.addFieldError(fullFieldName, identtError);
+            SubscriptionStore.addFieldError(fullFieldName, identtError, mrzError, res.id);
           }
           setLoadState('done');
         })
@@ -117,15 +128,27 @@ function StepField(props) {
     reader.readAsDataURL(file);
   }
 
+  /**
+     * Here you can override the label returned by the API if you want to customize the message.
+     */
   function getLabel() {
-    return <Label for={fieldId} className={fieldData.required ? 'required' : ''}>{fieldData.description}</Label>;
+    let description = "";
+    switch (fieldName) {
+      case "id_card_front":
+        description = "Identity Document: side/page with Machine-readable Zone (MRZ)";
+        break;
+      default:
+        description = fieldData.description;
+        break;
+    }
+    return <Label for={fieldId} className={fieldData.required ? 'required' : ''}>{description}</Label>;
   }
 
   if (fieldData.hidden) {
     return null;
   }
 
-  if (!modifying && fieldData.crypted && fieldData.status && fieldData.status !== 'EMPTY') {
+  if (!modifying && fieldData.crypted && fieldData.status && fieldData.status !== 'EMPTY'&& !mrzError) {
     return (
       <FormGroup>
         {getLabel()}
@@ -330,8 +353,9 @@ function StepField(props) {
   }
 
   if (fieldData.type === 'id') {
-    return (
+    return (<>
       <FormGroup>
+      {fieldName === 'id_card_front' && <img alt="MRZ example" src="/Passport_2_main_pages_sample_and_Id_with_MRZ.png" />}
         {getLabel()}
         <InputGroup className={`${fieldData.required ? 'file-input-required' : ''} ${fieldData.status === null || fieldData.status === 'EMPTY' ? 'status-empty' : ''}`}>
           {
@@ -347,7 +371,7 @@ function StepField(props) {
           }
           <div className="custom-file">
             <input type="file"
-              className={'custom-file-input' + (loadState === 'error' || hasError ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
+              className={'custom-file-input' + ((loadState === 'error' || hasError) && !(mrzError && iHaveNoMrz) ? ' is-invalid' : '') + (fieldData.required ? ' required' : '')}
               id={fieldName}
               required={fieldData.required}
               data-field-name={`${groupName}.fields.${fieldName}`}
@@ -366,9 +390,31 @@ function StepField(props) {
               }
             </label>
           </div>
-          <FieldErrors errors={errors} field={`${groupName}.fields.${fieldName}`} />
+          {fieldName === 'id_card_front' && mrzError && iHaveNoMrz
+            ? <div className="valid-feedback">Your document will be manually checked.</div>
+            : <FieldErrors errors={errors} field={`${groupName}.fields.${fieldName}`} />
+          }
         </InputGroup>
       </FormGroup>
+
+      {fieldName === 'id_card_front' && mrzError && subscription && subscription.ico_subscribed && subscription.ico_subscribed[0].ico.authorize_no_mrz_id &&
+        <Row className="justify-content-md-between align-items-md-end mb-4">
+          <Col xs="12" md={{ size: 'auto' }}>
+            <CustomInput type="checkbox" id={'iHaveNoMrz'}
+              required={true}
+              className="required"
+              label="Your identity document wasn't recognized. Please re-upload it, or check this box to apply for manual verification."
+              checked={iHaveNoMrz}
+              onChange={(ev) => {
+                SubscriptionStore.setIHaveNoMrz(idFileId, ev.target.checked);
+              }}
+              invalid={false}
+            >
+            </CustomInput>
+          </Col>
+        </Row>
+      }
+    </>
     );
   }
 

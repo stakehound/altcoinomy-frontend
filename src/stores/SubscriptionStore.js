@@ -11,7 +11,10 @@ class SubscriptionStore {
   globalErrors = [];
   terms = false;
   modified = {};
-  errors = {}
+  errors = {};
+  mrzError = false;
+  idFileId = null;
+  iHaveNoMrz = false;
 
   get loading() {
     return this.loadingCount > 0;
@@ -47,6 +50,32 @@ class SubscriptionStore {
 
   getTerms() {
     return this.terms;
+  }
+
+  setIHaveNoMrz(fileId, iHaveNoMrz) {
+    this.iHaveNoMrz = iHaveNoMrz;	    Subscriptions.patchFile(fileId, iHaveNoMrz).then(() => {
+      this.iHaveNoMrz = iHaveNoMrz;
+    }).catch(() => { });
+  }
+
+  getIHaveNoMrz() {
+    return this.iHaveNoMrz;
+  }
+
+  setMrzError(mrzError) {
+    this.mrzError = mrzError;
+  }
+
+  getMrzError() {
+    return this.mrzError;
+  }
+
+  setIdFileId(idFileId) {
+    this.idFileId = idFileId;
+  }
+
+  getIdFileId() {
+    return this.idFileId;
   }
 
   isSubmitted(subscriptionId) {
@@ -148,11 +177,13 @@ class SubscriptionStore {
     }
   }
 
-  addFieldError(field, error) {
+  addFieldError(field, error, mrzError, idFileId) {
     if (this.errors && !this.errors.fields) {
       this.errors.fields = {};
     }
     this.errors.fields[field] = error;
+    this.mrzError = mrzError;
+    this.idFileId = idFileId;
   }
 
   hasFieldError(field) {
@@ -179,6 +210,8 @@ class SubscriptionStore {
       .then(action(fillStatus => {
         this.resetFillStatus();
         this.fillStatus = fillStatus;
+        this.mrzError = false;
+        this.idFileId = null;
       }))
       .catch(err => {
         this.errors = err.response.body;
@@ -207,8 +240,8 @@ class SubscriptionStore {
     this.modified = {};
   }
 
-  uploadFile(fileName, fileBase64, fileType) {
-    return Subscriptions.uploadFile(this.fillStatus.subscription_id, fileName, fileBase64, fileType);
+  uploadFile(fileName, fileBase64, fileType, iHaveNoMrz) {
+    return Subscriptions.uploadFile(this.fillStatus.subscription_id, fileName, fileBase64, fileType, iHaveNoMrz);
   }
 
   patchPaymentStatus(subscriptionId, currencies) {
@@ -233,6 +266,7 @@ decorate(SubscriptionStore, {
   fillStatus: observable,
   globalErrors: observable,
   terms: observable,
+  iHaveNoMrz: observable,
   modified: observable,
   loading: computed,
   subscriptions: computed,
