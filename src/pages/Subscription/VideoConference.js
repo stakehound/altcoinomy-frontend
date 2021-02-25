@@ -12,7 +12,7 @@ function SubscriptionVideoConference(props) {
   const { loading } = SubscriptionStore;
   const subscription = SubscriptionStore.getSubscription(id);
   const fillStatus = SubscriptionStore.fillStatus;
-  
+
   useEffect(() => {
     SubscriptionStore.loadSubscription(id, { acceptCached: true });
     SubscriptionStore.loadFillStatus(id);
@@ -69,7 +69,7 @@ function SubscriptionVideoConference(props) {
         </Col>
       </Row>
 
-      <iframe title="video-conference" src={CONFERENCE_HOST_NAME +'/'+ fillStatus.video_conference_external_link} className="video-conference" />
+      <iframe allow="camera;microphone" title="video-conference" src={CONFERENCE_HOST_NAME + '/' + fillStatus.video_conference_external_link} className="video-conference" />
     </Container>
   );
 }
