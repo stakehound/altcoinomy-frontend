@@ -24,29 +24,26 @@ function VideoConferenceForm(props) {
     <h2>First, choose your preferred language</h2>
     <div className="my-3">
       <div className="form-check form-check-inline">
-        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage1" checked={preferredLanguage === 'ARABIC'} onChange={handleLanguageSelect} value="ARABIC" />
-        <label className="form-check-label" htmlFor="preferredLanguage1">Arabic</label>
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage1" checked={preferredLanguage === 'ENGLISH'} onChange={handleLanguageSelect} value="ENGLISH" />
+        <label className="form-check-label" htmlFor="preferredLanguage1">English</label>
       </div>
       <div className="form-check form-check-inline">
-        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage2" checked={preferredLanguage === 'CHINESE'} onChange={handleLanguageSelect} value="CHINESE" />
-        <label className="form-check-label" htmlFor="preferredLanguage2">Chinese</label>
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage2" checked={preferredLanguage === 'GERMAN'} onChange={handleLanguageSelect} value="GERMAN" />
+        <label className="form-check-label" htmlFor="preferredLanguage2">German</label>
       </div>
       <div className="form-check form-check-inline">
-        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage3" checked={preferredLanguage === 'ENGLISH'} onChange={handleLanguageSelect} value="ENGLISH" />
-        <label className="form-check-label" htmlFor="preferredLanguage3">English</label>
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage3" checked={preferredLanguage === 'FRENCH'} onChange={handleLanguageSelect} value="FRENCH" />
+        <label className="form-check-label" htmlFor="preferredLanguage3">French</label>
       </div>
       <div className="form-check form-check-inline">
-        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage4" checked={preferredLanguage === 'FRENCH'} onChange={handleLanguageSelect} value="FRENCH" />
-        <label className="form-check-label" htmlFor="preferredLanguage4">French</label>
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage4" checked={preferredLanguage === 'ARABIC'} onChange={handleLanguageSelect} value="ARABIC" />
+        <label className="form-check-label" htmlFor="preferredLanguage4">Arabic</label>
       </div>
       <div className="form-check form-check-inline">
-        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage5" checked={preferredLanguage === 'GERMAN'} onChange={handleLanguageSelect} value="GERMAN" />
-        <label className="form-check-label" htmlFor="preferredLanguage5">German</label>
+        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage5" checked={preferredLanguage === 'HEBREW'} onChange={handleLanguageSelect} value="HEBREW" />
+        <label className="form-check-label" htmlFor="preferredLanguage5">Hebrew</label>
       </div>
-      <div className="form-check form-check-inline">
-        <input className="form-check-input" type="radio" name="preferredLanguage" id="preferredLanguage6" checked={preferredLanguage === 'RUSSIAN'} onChange={handleLanguageSelect} value="RUSSIAN" />
-        <label className="form-check-label" htmlFor="preferredLanguage6">Russian</label>
-      </div>
+
     </div>
     {VideoConferenceStore.getPreferredLanguage() &&
       <><h2>Pick a slot <span className="badge badge-info">Your timezone {moment.tz.guess()}</span></h2>
