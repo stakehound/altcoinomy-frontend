@@ -63,11 +63,13 @@ function SubscriptionVideoConference(props) {
       <Row className="justify-content-md-between align-items-md-center">
         <Col xs="12" className="mb-12 mb-md-3 text-right">
           <strong>Status of your subscription: </strong>
+          <div className="badge badge-info">
             {statusParser(subscription.status)}
+          </div>
         </Col>
       </Row>
 
-      <iframe title="video-conference" src={CONFERENCE_HOST_NAME +'/'+ fillStatus.video_conference_external_link} className="video-conference" />
+      <iframe allow="camera;microphone" title="video-conference" src={CONFERENCE_HOST_NAME + '/' + fillStatus.video_conference_external_link} className="video-conference" />
     </Container>
   );
 }
