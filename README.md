@@ -12,7 +12,7 @@ For this purpose we assume that you have npm installed on your machine.
 
 If you want to change the design of the embeded platform, you can edit the current source code and change the css styles and react pages. If you run the development environment, you will have access to a live reload which will reload the react app after every change in your application.
 
-Run the following commands :
+Run the following commands:
 
 ```bash
 npm install
