@@ -31,10 +31,14 @@ function StepField(props) {
   }
 
   function handleChange(ev) {
-    const value = ev.target && 'value' in ev.target ? ev.target.value : ev;
+    let value = ev.target && 'value' in ev.target ? ev.target.value : ev;
+    if (fieldData.type === "bool") {
+      value = ev.target.checked;
+    }
 
     if (fieldData.value !== value) {
       SubscriptionStore.setModified(groupName, fieldName, value);
+      fieldData.value = value;
     } else {
       SubscriptionStore.removeModified(groupName, fieldName);
     }
@@ -255,6 +259,28 @@ function StepField(props) {
           />
           <FieldErrors errors={errors} field={`${groupName}.fields.${fieldName}`} />
         </InputGroup>
+      </FormGroup>
+    );
+  }
+
+  if (fieldData.type === 'bool') {
+    return (
+      <FormGroup>
+        {fieldData.status === "REFUSED" && fieldName === "accredited_investor"
+          ? <div className="alert alert-danger">You are in a restricted juridiction. You must be accredited to contribute to this project.</div>
+          : <></>
+        }
+        <CustomInput
+          type="checkbox"
+          id={`${groupName}_fields_${fieldName}`}
+          required={fieldData.required}
+          className={`${fieldData.required ? 'required' : ''}`}
+          checked={fieldData.value}
+          onChange={handleChange}
+          invalid={hasError}
+        >
+        </CustomInput>
+        {getLabel()}
       </FormGroup>
     );
   }
