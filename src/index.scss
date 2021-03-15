@@ -25,6 +25,10 @@
   display: none;
 }
 
+.custom-checkbox {
+  display: inline-block;
+}
+
 .custom-checkbox.custom-control > span.required:after,
 label.required:after {
   content: "*";
