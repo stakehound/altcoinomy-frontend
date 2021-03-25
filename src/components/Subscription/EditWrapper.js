@@ -63,7 +63,6 @@ function SubscriptionEditWrapper(props) {
     );
   }
 
-
   return (
     <>
       <Media className="mb-3">
@@ -104,7 +103,6 @@ function SubscriptionEditWrapper(props) {
       <div className={`${subscription && SubscriptionStore.isSubmitted(subscription.id) ? 'subscription-submitted' : ''}`}>
         {stepComponents.map((Component, index) =>
           <Component key={index}
-
             subscription={subscription}
             fillStatus={fillStatus}
             stepOpen={stepOpen}
@@ -118,7 +116,6 @@ function SubscriptionEditWrapper(props) {
 
       <GlobalErrors errors={globalErrors}></GlobalErrors>
       {successMessage && <Alert color="success">{successMessage}</Alert>}
-
 
       <Row className="justify-content-md-between align-items-md-end mb-4">
         <Col xs="12" md={{ size: 'auto' }}>

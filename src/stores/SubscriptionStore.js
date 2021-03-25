@@ -96,7 +96,7 @@ class SubscriptionStore {
         throw err;
       }))
       .finally(action(() => { this.finalizingCount--; }))
-      ;
+    ;
   }
 
   loadSubscriptions() {
@@ -111,7 +111,7 @@ class SubscriptionStore {
         });
       }))
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   loadSubscription(id, { acceptCached = false } = {}) {
@@ -132,7 +132,7 @@ class SubscriptionStore {
         return subscription;
       }))
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   createSubscription(icoId, registerAs) {
@@ -145,7 +145,7 @@ class SubscriptionStore {
         return subscription;
       })
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   isStepModified(groupName, fieldName = null) {
@@ -232,7 +232,7 @@ class SubscriptionStore {
         ContributionStore.setInitialData(this.fillStatus.groups.finalization.fields.contribution.value);
       }))
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   resetFillStatus() {
@@ -255,7 +255,7 @@ class SubscriptionStore {
         this.errors = err.response.body;
       })
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
 }
