@@ -18,7 +18,7 @@ function Home(props) {
             </p>
             <p>
               <strong>
-              StakeHound delegates to Altocinomy the KYC and AML process.
+              StakeHound delegates to Altcoinomy the KYC and AML process.
               Altcoinomy SA (CHE-209.239.695) is bound by Swiss laws on banking secrecy, and will never distribute confidential information about you.
               </strong>
             </p>
