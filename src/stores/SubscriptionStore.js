@@ -217,7 +217,25 @@ class SubscriptionStore {
         this.errors = err.response.body;
       })
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
+  }
+
+  deleteSubscription(id) {
+    this.loadingCount++;
+
+    this.errors = {};
+
+    return Subscriptions.delete(id)
+      .then(subscription => {
+        this.subscriptionRegistry.delete(subscription.id);
+
+        return subscription;
+      })
+      .catch(err => {
+        this.errors = err.response.body;
+      })
+      .finally(action(() => { this.loadingCount--; }))
+    ;
   }
 
   loadFillStatus(id) {
