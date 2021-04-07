@@ -120,6 +120,8 @@ const Subscriptions = {
     requests.get('/subscriptions'),
   get: (id) =>
     requests.get(`/subscriptions/${id}`),
+  delete: (id) =>
+    requests.del(`/subscriptions/${id}`),
   create: (icoId, registerAs) =>
     requests.post('/subscriptions', { ico: icoId, register_as: registerAs }),
   patch: (id, data) =>

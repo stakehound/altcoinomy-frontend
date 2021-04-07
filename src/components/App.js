@@ -22,8 +22,6 @@ function App(props) {
   const { CommonStore, CustomerStore } = props;
   const history = useHistory();
 
-  
-
   useEffect(() => {
     document.title = CommonStore.appName;
 
