@@ -7,6 +7,8 @@ import PrivateRoute from './PrivateRoute'
 import Register from '../pages/Register';
 import Validate from '../pages/Validate';
 import ValidateResend from '../pages/ValidateResend';
+import PasswordResetRequest from '../pages/PasswordResetRequest';
+import PasswordResetUpdate from '../pages/PasswordResetUpdate';
 import Login from '../pages/Login';
 import Home from '../pages/Home';
 import Subscription from '../pages/Subscription';
@@ -47,6 +49,9 @@ function App(props) {
           <Route path="/register" component={Register} />
           <Route path="/validate" component={Validate} exact />
           <Route path="/validate/resend" component={ValidateResend} />
+          <Route path="/password-reset/request" component={PasswordResetRequest} />
+          <Route path="/password-reset/update" component={PasswordResetUpdate} exact />
+          <Route path="/password-reset/update/:token" component={PasswordResetUpdate} />
           <PrivateRoute path="/subscription" component={Subscription} />
           <Route path="/" component={Home} />
         </Switch>
