@@ -157,7 +157,7 @@ class AccountStore {
           this.errors.fields = err.response.body.fields;
         }
 
-        if (err.response.status === 403) {
+        if (err.response.status === 403 && typeof err.response.body === 'string') {
           this.errors.form = err.response.body;
         }
 
