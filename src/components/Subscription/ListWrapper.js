@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Spinner, Table, ButtonGroup } from 'reactstrap';
+import { inject, observer } from 'mobx-react';
+import { Alert, Spinner, Table, ButtonGroup, Button } from 'reactstrap';
 import statusParser from '../../helpers/statusParser'
 import moment from 'moment';
 
 function SubscriptionListWrapper(props) {
   const { subscriptions, loading } = props;
+  const { SubscriptionStore } = props;
 
   if (loading) {
     return (
@@ -42,6 +44,22 @@ function SubscriptionListWrapper(props) {
                 <td>{statusParser(subscription.status)}</td>
                 <td className="text-right">
                   <ButtonGroup vertical size="sm">
+                    {
+                      subscription.deletable
+                      &&
+                      <Button
+                        color="danger"
+                        onClick={() => {
+                          SubscriptionStore.deleteSubscription(subscription.id)
+                            .then(res => {
+                            })
+                            .catch(err => {
+                            });
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    }
                     <Link to={`/subscription/${subscription.id}`} className="btn btn-primary">Edit</Link>
                     {
                       subscription.status !== 'subscription_pending'
@@ -63,4 +81,4 @@ function SubscriptionListWrapper(props) {
   );
 }
 
-export default SubscriptionListWrapper;
+export default inject('SubscriptionStore')(observer(SubscriptionListWrapper));
