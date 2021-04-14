@@ -54,9 +54,9 @@ function PasswordResetUpdate(props) {
             <FormGroup>
               <Input
                 type="password" placeholder="New password" bsSize="lg" value={values.password} onChange={handlePasswordChange}
-                className={errors && errors.fields && errors.fields.plainPassword && 'is-invalid'}
+                className={errors && errors.fields && errors.fields.password && 'is-invalid'}
               ></Input>
-              <FieldErrors errors={errors} field="plainPassword" />
+              <FieldErrors errors={errors} field="password" />
             </FormGroup>
 
             <Button color="primary" size="lg" disabled={loading} className="d-flex align-items-center">
