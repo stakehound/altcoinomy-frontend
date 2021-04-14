@@ -161,14 +161,20 @@ class SubscriptionStore {
   }
 
   setModified(groupName, fieldName, value) {
+    const fullFieldName = `${groupName}.fields.${fieldName}`;
+
     if (!this.modified[groupName]) {
       this.modified[groupName] = {};
     }
     if (!this.modified[groupName][fieldName]) {
       this.modified[groupName][fieldName] = {};
     }
-
+    
     this.modified[groupName][fieldName]['value'] = value;
+
+    if (this.hasFieldError(fullFieldName)) {
+      delete this.errors.fields[fullFieldName];
+    }
   }
 
   removeModified(groupName, fieldName) {
