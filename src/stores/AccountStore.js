@@ -173,7 +173,7 @@ class AccountStore {
 
     return Accounts.passwordResetUpdate(this.values.code, this.values.password)
       .then(res => {
-        if (res && res.confirmed === false) {
+        if (res && res.success === false) {
           this.errors.form = 'Password reset code is invalid';
 
           throw new Error('Password reset code is invalid');
