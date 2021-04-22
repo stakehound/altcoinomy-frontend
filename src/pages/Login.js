@@ -33,9 +33,16 @@ function Login(props) {
       <Row>
         <Col xs="12" md={{size: 6, offset: 3}}>
           <h1>Sign In</h1>
-          <p>
-            <Link to="/register">Need an account?</Link>
-          </p>
+          <Row className="justify-content-between">
+            <Col xs="12" md={{size: 'auto'}}>
+              <p>
+                <Link to="/register">Need an account?</Link>
+              </p>
+            </Col>
+            <Col xs="12" md={{size: 'auto'}}>
+                <Link to="/password-reset/request">Forgot password?</Link>
+            </Col>
+          </Row>
 
           <FormErrors errors={errors} />
 

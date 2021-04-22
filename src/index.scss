@@ -119,6 +119,10 @@ label.required:after {
   }
 }
 
+.react-datepicker-popper {
+  z-index: 2;
+}
+
 .react-datepicker__triangle {
   left: 50px !important;
 }

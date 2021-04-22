@@ -161,6 +161,8 @@ class SubscriptionStore {
   }
 
   setModified(groupName, fieldName, value) {
+    const fullFieldName = `${groupName}.fields.${fieldName}`;
+
     if (!this.modified[groupName]) {
       this.modified[groupName] = {};
     }
@@ -169,6 +171,10 @@ class SubscriptionStore {
     }
 
     this.modified[groupName][fieldName]['value'] = value;
+
+    if (this.hasFieldError(fullFieldName)) {
+      delete this.errors.fields[fullFieldName];
+    }
   }
 
   removeModified(groupName, fieldName) {
@@ -218,7 +224,25 @@ class SubscriptionStore {
       })
       .finally(action(() => { this.loadingCount--; }))
       ;
-  }
+    }
+
+    deleteSubscription(id) {
+      this.loadingCount++;
+
+      this.errors = {};
+
+      return Subscriptions.delete(id)
+        .then(subscription => {
+          this.subscriptionRegistry.delete(subscription.id);
+
+          return subscription;
+        })
+        .catch(err => {
+          this.errors = err.response.body;
+        })
+        .finally(action(() => { this.loadingCount--; }))
+      ;
+    }
 
   loadFillStatus(id) {
     this.loadingCount++;

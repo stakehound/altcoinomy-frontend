@@ -158,12 +158,17 @@ function SubscriptionPaymentStatusWrapper(props) {
       </Media>
 
       <Row className="justify-content-md-between align-items-md-center">
-        <Col xs="12" className="mb-12 mb-md-3 text-right">
+        <Col xs="12" className="mb-3 text-right">
           <strong>Status of your subscription: </strong>
             {statusParser(subscription.status)}
         </Col>
       </Row>
-
+      <Col xs="12" className="mb-3 text-right">
+          <strong>Token delivery address: </strong>
+          <div className="badge badge-info">
+            {subscription.ico_subscribed[0].investment.crypto_address_for_token_delivry.value}
+          </div>
+        </Col>
       <FormErrors errors={errors} />
       {successMessage && <Alert color="success">{successMessage}</Alert>}
 
