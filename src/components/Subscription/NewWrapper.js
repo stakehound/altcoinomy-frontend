@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Button, Spinner, Table, Form, FormGroup, CustomInput } from 'reactstrap';
 import moment from 'moment';
 import IcoLogo from '../IcoLogo';
-import { FILTER_KEYWORD } from '../../config';
+import { FILTER_KEYWORD, EXCLUDE } from '../../config';
 
 function SubscriptionNewWrapper(props) {
   const { icos, loadingIco, loadingSubscription, participate } = props;
@@ -50,7 +50,7 @@ function SubscriptionNewWrapper(props) {
               const now = moment();
               const dateTo = moment(ico.date_to);
               const isExpired = dateTo < now;
-              if (ico.name.includes(FILTER_KEYWORD)) {
+              if (ico.name.includes(FILTER_KEYWORD) && ico.name != EXCLUDE) {
                 return (
                   <tr key={ico.id}>
                     <td>
