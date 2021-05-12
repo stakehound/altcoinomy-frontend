@@ -5,12 +5,8 @@ class Annex1Store {
 
   loadingCount = 0;
   data = {
-    name: '',
-    date_of_birth: '',
-    nationality: '',
     place: '',
     sign: '',
-    address: ''
   };
   errors = {};
   signatureData = null;
@@ -20,12 +16,8 @@ class Annex1Store {
   }
 
   reset() {
-    this.data.name = '';
-    this.data.date_of_birth = '';
-    this.data.nationality = '';
     this.data.place = '';
     this.data.sign = '';
-    this.data.address = '';
 
     this.errors = {};
     this.signatureData = null;
@@ -42,7 +34,7 @@ class Annex1Store {
   }
 
   getError(field) {
-    const path = Array.isArray(field) ? field : [ field ];
+    const path = Array.isArray(field) ? field : [field];
 
     if (!this.errors.fields) {
       return false;
@@ -83,11 +75,11 @@ class Annex1Store {
             this.errors.fields = err.response.body.fields;
           }
         }
-        
+
         throw err;
       }))
       .finally(action(() => { this.loadingCount--; }))
-    ;
+      ;
   }
 
 }
