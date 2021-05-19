@@ -107,6 +107,19 @@ function ContributionForm(props) {
     }
   }
 
+  const cryptoCurrencies = data['tier'] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.crypto : [];
+  const fiatCurrencies = data['tier'] && tiersList[data['tier']] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.fiat : [];
+  const mergedCurrencies = cryptoCurrencies.concat(fiatCurrencies);
+
+  if (cryptoCurrencies.length + fiatCurrencies.length === 1) {
+    // If only one currency is possible, automatically select it...
+    let currencies = toJS(data.currencies);
+    if (currencies && currencies.length === 1 && currencies[0].currency_code !== mergedCurrencies[0].currency.code) {
+      currencies[0].currency_code = mergedCurrencies[0].currency.code;
+      ContributionStore.setData("currencies", currencies);
+    }
+  }
+
   return (
     <>
       <FormGroup>
@@ -147,8 +160,8 @@ function ContributionForm(props) {
               <CurrencySelect
                 id={formId + 'currency_code'}
                 value={currency.currency_code}
-                fiat={data['tier'] && tiersList[data['tier']] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.fiat : []}
-                crypto={data['tier'] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.crypto : []}
+                fiat={fiatCurrencies}
+                crypto={cryptoCurrencies}
                 invalid={ContributionStore.hasError(['currencies', index, 'currency_code'])}
                 onChange={ev => {
                   ContributionStore.setInvestment(currency, 'currency_code', ev.target.value);

@@ -107,7 +107,7 @@ const IcoDocuments = {
 
 const Annexes = {
   postAnnex1: (subscriptionId, data) =>
-    requests.post(`/subscriptions/${subscriptionId}/annex1`, data),
+    requests.post(`/subscriptions/${subscriptionId}/annex1/simple`, data),
   postAnnex2: (subscriptionId, data) =>
     requests.post(`/subscriptions/${subscriptionId}/annex2`, data),
 };
