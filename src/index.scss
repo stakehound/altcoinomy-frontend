@@ -1,3 +1,4 @@
+@import "theme/variables.scss";
 @import "~bootstrap/scss/bootstrap";
 
 @mixin crypted-status-variant($status-color) {
@@ -191,3 +192,5 @@ iframe.video-conference {
   width: 100%;
   display: block;
 }
+
+@import "theme/theme.scss";

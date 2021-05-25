@@ -3,8 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { FormGroup, Button, InputGroup, InputGroupAddon, InputGroupText, Label, Input, Spinner, Col, Row } from 'reactstrap';
 import SignaturePad from 'react-signature-pad-wrapper';
 import FieldErrors from './FieldErrors';
-import DatePicker from './DatePicker';
-import CountriesSelect from './CountriesSelect';
 import { asyncSessionStorage } from '../helpers/sessionStorage';
 import CustomInput from 'reactstrap/lib/CustomInput';
 
