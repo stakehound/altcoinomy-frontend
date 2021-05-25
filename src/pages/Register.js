@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { Container, Col, Row, Button, Spinner, Form, FormGroup, Input } from 'reactstrap';
@@ -11,25 +11,25 @@ function Register(props) {
   const history = useHistory();
 
   useEffect(() => {
-    return () => {AccountStore.reset();}
+    return () => { AccountStore.reset(); }
   }, [AccountStore]);
 
-  function handleUsernameChange(e) {AccountStore.setUsername(e.target.value);}
-  function handleEmailChange(e) {AccountStore.setEmail(e.target.value);}
-  function handlePasswordChange(e) {AccountStore.setPassword(e.target.value);}
+  function handleUsernameChange(e) { AccountStore.setUsername(e.target.value); }
+  function handleEmailChange(e) { AccountStore.setEmail(e.target.value); }
+  function handlePasswordChange(e) { AccountStore.setPassword(e.target.value); }
   function handleSubmitForm(e) {
     e.preventDefault();
 
     AccountStore.register()
       .then(() => history.replace('/validate'))
-      .catch(err => {})
-    ;
+      .catch(err => { })
+      ;
   }
 
   return (
-    <Container>
+    <Container className="register-container">
       <Row>
-        <Col xs="12" md={{size: 6, offset: 3}}>
+        <Col xs="12" md={{ size: 6, offset: 3 }}>
           <h1>Sign Up</h1>
           <p>
             <Link to="/login">Have an account?</Link>

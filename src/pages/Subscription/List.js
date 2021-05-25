@@ -14,14 +14,14 @@ function SubscriptionList(props) {
   }, [SubscriptionStore]);
 
   return (
-    <Container>
+    <Container className="subscriptions-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">
-            <Col xs="12" md={{size: 'auto'}}>
+            <Col xs="12" md={{ size: 'auto' }}>
               <h1>Subscription <small>list</small></h1>
             </Col>
-            <Col xs="12" md={{size: 'auto'}}>
+            <Col xs="12" md={{ size: 'auto' }}>
               <Link to={`${url}/new`} className="btn btn-primary w-100">New</Link>
             </Col>
           </Row>

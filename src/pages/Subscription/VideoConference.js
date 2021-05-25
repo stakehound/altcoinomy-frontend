@@ -34,7 +34,7 @@ function SubscriptionVideoConference(props) {
   }
 
   return (
-    <Container>
+    <Container className="videoconf-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">

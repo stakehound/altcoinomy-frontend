@@ -11,10 +11,10 @@ function Validate(props) {
   const history = useHistory();
 
   useEffect(() => {
-    return () => {AccountStore.reset();}
+    return () => { AccountStore.reset(); }
   }, [AccountStore]);
 
-  function handleCodeChange(e) {AccountStore.setCode(e.target.value);}
+  function handleCodeChange(e) { AccountStore.setCode(e.target.value); }
   function handleSubmitForm(e) {
     e.preventDefault();
 
@@ -25,13 +25,13 @@ function Validate(props) {
           history.replace('/')
         }
       })
-    ;
+      ;
   };
 
   return (
-    <Container>
+    <Container className="account-validate-container">
       <Row>
-        <Col xs="12" md={{size: 6, offset: 3}}>
+        <Col xs="12" md={{ size: 6, offset: 3 }}>
           <h1>Validate account</h1>
           <p>
             <Link to="/validate/resend">Resend validation code?</Link>

@@ -5,9 +5,9 @@ import { Container, Jumbotron, Col, Row } from 'reactstrap';
 function Home(props) {
   return (
     <Jumbotron>
-      <Container>
+      <Container className="home-container">
         <Row>
-          <Col xs="12" md={{size: 8, offset: 2}}>
+          <Col xs="12" md={{ size: 8, offset: 2 }}>
             <h1>Welcome to {props.CommonStore.appName}</h1>
             <p>
               We implement a simple and user-friendly procedure in line with the Swiss regulatory framework,

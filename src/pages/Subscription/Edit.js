@@ -24,7 +24,7 @@ function SubscriptionEdit(props) {
   }, [SubscriptionStore, Annex1Store, Annex2Store, IcoDocumentStore, id]);
 
   return (
-    <Container>
+    <Container className="subscription-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">

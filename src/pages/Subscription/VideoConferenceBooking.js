@@ -11,7 +11,7 @@ function SubscriptionVideoConferenceBooking(props) {
   const { SubscriptionStore } = props;
   const { loading } = SubscriptionStore;
   const subscription = SubscriptionStore.getSubscription(id);
-  
+
   useEffect(() => {
     SubscriptionStore.loadSubscription(id, { acceptCached: true });
     SubscriptionStore.loadFillStatus(id);
@@ -33,7 +33,7 @@ function SubscriptionVideoConferenceBooking(props) {
   }
 
   return (
-    <Container>
+    <Container className="videoconf-booding-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">

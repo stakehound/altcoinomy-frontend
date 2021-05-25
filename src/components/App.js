@@ -62,7 +62,7 @@ function App(props) {
   return (
     <>
       <Header />
-      <Container>
+      <Container className="global-container">
         <Row>
           <Col className="text-center">
             <Spinner color="secondary " className="m-5 p-5" />
