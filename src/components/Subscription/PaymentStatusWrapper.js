@@ -4,7 +4,6 @@ import { Alert, Media, Spinner, Row, Col, Button, CustomInput, Input, FormGroup,
 import IcoLogo from '../IcoLogo';
 import FormErrors from '../../components/FormErrors';
 import statusParser from '../../helpers/statusParser';
-import { toJS } from 'mobx';
 
 function SubscriptionPaymentStatusWrapper(props) {
   const { id, SubscriptionStore } = props;
