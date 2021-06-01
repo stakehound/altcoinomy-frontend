@@ -12,6 +12,7 @@ import PasswordResetUpdate from '../pages/PasswordResetUpdate';
 import Login from '../pages/Login';
 import Home from '../pages/Home';
 import Subscription from '../pages/Subscription';
+import Footer from './Footer';
 
 const urlParams = new URLSearchParams(window.location.search);
 const referral = urlParams.get("referral");
@@ -55,6 +56,7 @@ function App(props) {
           <PrivateRoute path="/subscription" component={Subscription} />
           <Route path="/" component={Home} />
         </Switch>
+        <Footer />
       </>
     );
   }
@@ -69,6 +71,7 @@ function App(props) {
           </Col>
         </Row>
       </Container>
+      <Footer />
     </>
   );
 }
