@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import { Trash2 as IconRemove } from 'react-feather';
 import { FormGroup, Button, InputGroup, InputGroupAddon, InputGroupText, Label, Input, Spinner, Col, Row } from 'reactstrap';
 import FieldErrors from './FieldErrors';
 import TiersSelect from './TiersSelect';
@@ -185,33 +184,8 @@ function ContributionForm(props) {
               <FieldErrors errors={errors} field={['currencies', index, 'address']} />
             </FormGroup>}
           </Col>
-          <Col xs="1" className="mb-4 mb-md-0">
-            <Button
-              className="w-100"
-              color="danger"
-              onClick={() => {
-                ContributionStore.removeInvestment(currency);
-              }}
-            >
-              <IconRemove></IconRemove>
-            </Button>
-          </Col>
         </Row>
       })}
-
-      <Row className="justify-content-md-between align-items-md-center">
-        <Col xs="12" md={{ size: 'auto' }} className="mb-3">
-          <Button
-            className="w-100"
-            color="primary"
-            onClick={() => {
-              ContributionStore.addInvestment();
-            }}
-          >
-            Add
-          </Button>
-        </Col>
-      </Row>
 
       <Row className="justify-content-md-between align-items-md-center">
         <Col xs="12" md={{ size: 'auto' }} className="mb-3">
