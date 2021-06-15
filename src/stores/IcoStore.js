@@ -33,8 +33,8 @@ class IcoStore {
           if (!PROJECTS_TO_DISPLAY) {
             projectToBeDisplayed = true;
           } else {
-            PROJECTS_TO_DISPLAY.forEach(projectId => {
-              if (projectId === icos[key].id) {
+            PROJECTS_TO_DISPLAY.forEach(identifier => {
+              if (identifier === icos[key].id || identifier === icos[key].slug) {
                 projectToBeDisplayed = true;
               }
             });
