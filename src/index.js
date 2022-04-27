@@ -13,6 +13,7 @@ import IcoDocumentStore from './stores/IcoDocumentStore';
 import Annex1Store from './stores/Annex1Store';
 import Annex2Store from './stores/Annex2Store';
 import SubscriptionStore from './stores/SubscriptionStore';
+import PolStore from './stores/PolStore';
 import ContributionStore from './stores/ContributionStore';
 import VideoConferenceStore from './stores/VideoConferenceStore';
 import './index.scss';
@@ -29,6 +30,7 @@ const stores = {
   SubscriptionStore,
   ContributionStore,
   VideoConferenceStore,
+  PolStore,
 };
 
 ReactDOM.render(

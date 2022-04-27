@@ -18,7 +18,8 @@ function Step2Annex1(props) {
     <CollapsibleCard
       active={annex.required}
       name={componentId}
-      fields={header.active ? { annex } : null} considerAsForm
+      fields={header.active ? { annex } : null}
+      considerAsForm
       header={annex.description}
       {...otherProps}
     >

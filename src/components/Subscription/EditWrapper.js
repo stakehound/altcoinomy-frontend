@@ -5,6 +5,7 @@ import { Alert, Media, Spinner, Row, Col, Button } from 'reactstrap';
 import statusParser from '../../helpers/statusParser'
 import IcoLogo from '../IcoLogo';
 import Step1RegisterAs from '../Step/Step1RegisterAs';
+import Step1bProofOfLiveness from '../Step/Step1bProofOfLiveness';
 import Step2Individual from '../Step/Step2Individual';
 import Step2Company from '../Step/Step2Company';
 import Step2Annex1 from '../Step/Step2Annex1';
@@ -29,6 +30,7 @@ function SubscriptionEditWrapper(props) {
 
   const stepComponents = [
     Step1RegisterAs,
+    Step1bProofOfLiveness,
     Step2Individual,
     Step2Company,
     Step2Annex1,

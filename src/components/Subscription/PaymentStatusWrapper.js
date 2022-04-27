@@ -89,6 +89,7 @@ function SubscriptionPaymentStatusWrapper(props) {
       }
     }
 
+
     if (formData.crypto) {
       Object.keys(formData.crypto).forEach(cryptoCurrency => {
         const cryptoData = {

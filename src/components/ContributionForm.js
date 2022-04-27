@@ -62,7 +62,7 @@ function ContributionForm(props) {
           color="primary"
           onClick={() => { SubscriptionStore.loadFillStatus(subscriptionId); }}
         >
-          I've downloaded my contribution report
+          Download my contribution report and submit
         </Button>}
       </>
     );
