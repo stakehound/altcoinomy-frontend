@@ -120,7 +120,7 @@ function SubscriptionEditWrapper(props) {
       {successMessage && <Alert color="success">{successMessage}</Alert>}
 
       <Row className="justify-content-md-between align-items-md-end mb-4">
-        <Col xs="12" md={{ size: 'auto' }}>
+        <Col className="col-12 col-md-6">
           <CustomInput type="checkbox" id={'terms'}
             required={true}
             className="required"
@@ -133,8 +133,9 @@ function SubscriptionEditWrapper(props) {
           >
             <span className="required"></span>
           </CustomInput>
-          {fillStatus.status !== 'subscription_submitted' && <Button
-            className={`w-100 ${finalizing ? "loading" : ''}`}
+
+          <Button
+            className={`w-100 mt-5 ${finalizing ? "loading" : ''}`}
             color="primary"
             disabled={finalizing}
             onClick={() => {
@@ -152,13 +153,13 @@ function SubscriptionEditWrapper(props) {
             }}
           >
             {finalizing ? 'Submission in progress...' : 'Finalize my KYC'}
-          </Button>}
+          </Button>
 
         </Col>
         {
           fillStatus.status !== 'subscription_pending'
           &&
-          <Col xs="12" md={{ size: 'auto' }} className="mt-3 mt-md-0">
+          <Col className="col-12 col-md-6 mt-3 mt-md-0">
             <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-outline-success w-100">Go to payment status page</Link>
           </Col>
         }
