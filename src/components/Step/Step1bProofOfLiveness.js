@@ -29,6 +29,34 @@ function Step1bProofOfLiveness(props) {
     }
   }
 
+  let display = {
+    msg: {
+      refused: "Sorry, your proof of liveness did not pass. Please do it again.",
+      accepted: "You completed your proof of liveness.",
+      filled: "Your proof of liveness is being checked."
+    },
+    btns: {
+      retry: "Retry my proof of liveness",
+      update: "Update my proof of liveness",
+      start: "Start the proof of liveness"
+    }
+  }
+
+  if (toJS(fillStatus.groups.basics.fields.subscribed_as.value) !== "individual") {
+    display = {
+      msg: {
+        refused: "Sorry, your documents were not valid. Please do it again.",
+        accepted: "Your id documents have been accepted.",
+        filled: "Your id documents are being checked."
+      },
+      btns: {
+        retry: "Send my documents again",
+        update: "Update my id documents",
+        start: "Securely send my id documents"
+      }
+    }
+  }
+
   // Received some data from checkin
   const checkinDataReceived = (received) => {
     const { data } = received;
@@ -59,37 +87,51 @@ function Step1bProofOfLiveness(props) {
     <CollapsibleCard
       active={header.active}
       name={groupName}
-      header="Proof of liveness"
+      header={toJS(fillStatus.groups.basics.fields.subscribed_as.value) === "individual" ? "Proof of liveness" : "Signatory identification documents"}
       fields={header.active ? { pol } : null}
       considerAsForm
       {...otherProps}
     >
-      <p>We use an automated identity checking process.</p>
-      <p>The self onboarding requires you to undergo proof of liveness process.</p>
-      <p>Uploading an ID document containing an MRZ (passport or ID card)
-        ensures the fastest on boarding. Any other documents will require our KYC
-        officers to look into your application on a case by case, and might be refused.
-      </p>
-      <p>Do not worry if this one fails, a compliance officer will get back to you to resolve it.</p>
+      {toJS(fillStatus.groups.basics.fields.subscribed_as.value) === "individual" ?
+        <>
+          <p>We use an automated identity checking process.</p>
+          <p>The self onboarding requires you to undergo proof of liveness process.</p>
+          <p>Uploading an ID document containing an MRZ (passport or ID card)
+            ensures the fastest on boarding. Any other documents will require our KYC
+            officers to look into your application on a case by case, and might be refused.
+          </p>
+          <p>Do not worry if this one fails, a compliance officer will get back to you to resolve it.</p>
+
+        </> :
+        <>
+          <p>Please upload the identifications documents of the signatory.</p>
+          <p>Uploading an ID document containing an MRZ (passport or ID card)
+            ensures the fastest on boarding. Any other documents will require our KYC
+            officers to look into your application on a case by case, and might be refused.
+          </p>
+          <p>Do not worry if this one fails, a compliance officer will get back to you to resolve it.</p>
+
+        </>
+      }
 
       {polError &&
         <div className='alert alert-danger'>{polError}</div>
       }
 
       {polStatus === "REFUSED" &&
-        <div className='alert alert-danger'>Sorry, your proof of lveness did not pass. Please do it again.</div>
+        <div className='alert alert-danger'>{display.msg.refused}</div>
       }
       {polStatus === "ACCEPTED" &&
-        <div className='alert alert-success'>You completed your proof of liveness.</div>
+        <div className='alert alert-success'>{display.msg.accepted}</div>
       }
       {polStatus === "FILLED" &&
-        <div className='alert alert-info'>Your proof of liveness is being checked.</div>
+        <div className='alert alert-info'>{display.msg.filled}</div>
       }
 
       <Button color="primary" onClick={() => startPol()}>
-        {(polStatus === "REFUSED" || polError) && "Retry my proof of liveness"}
-        {(polStatus === "FILLED" || polStatus === "ACCEPTED") && !polError && "Update my proof of liveness"}
-        {polStatus === "EMPTY" && !polError && "Start the proof of liveness"}
+        {(polStatus === "REFUSED" || polError) && display.btns.retry}
+        {(polStatus === "FILLED" || polStatus === "ACCEPTED") && !polError && display.btns.update}
+        {polStatus === "EMPTY" && !polError && display.btns.start}
       </Button>
     </CollapsibleCard>
   );
