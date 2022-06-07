@@ -10,11 +10,11 @@ function Login(props) {
   const history = useHistory();
 
   useEffect(() => {
-    return () => {AccountStore.reset();}
+    return () => { AccountStore.reset(); }
   }, [AccountStore]);
 
-  function handleUsernameChange(e) {AccountStore.setUsername(e.target.value);}
-  function handlePasswordChange(e) {AccountStore.setPassword(e.target.value);}
+  function handleUsernameChange(e) { AccountStore.setUsername(e.target.value); }
+  function handlePasswordChange(e) { AccountStore.setPassword(e.target.value); }
   function handleSubmitForm(e) {
     e.preventDefault();
 
@@ -25,22 +25,22 @@ function Login(props) {
           history.replace('/validate')
         }
       })
-    ;
+      ;
   };
 
   return (
-    <Container>
+    <Container className="login-container">
       <Row>
-        <Col xs="12" md={{size: 6, offset: 3}}>
+        <Col xs="12" md={{ size: 6, offset: 3 }}>
           <h1>Sign In</h1>
           <Row className="justify-content-between">
-            <Col xs="12" md={{size: 'auto'}}>
+            <Col xs="12" md={{ size: 'auto' }}>
               <p>
                 <Link to="/register">Need an account?</Link>
               </p>
             </Col>
-            <Col xs="12" md={{size: 'auto'}}>
-                <Link to="/password-reset/request">Forgot password?</Link>
+            <Col xs="12" md={{ size: 'auto' }}>
+              <Link to="/password-reset/request">Forgot password?</Link>
             </Col>
           </Row>
 

@@ -16,11 +16,11 @@ function PasswordResetUpdate(props) {
       AccountStore.setCode(token);
     }
 
-    return () => {AccountStore.reset();}
+    return () => { AccountStore.reset(); }
   }, [AccountStore, token]);
 
-  function handleCodeChange(e) {AccountStore.setCode(e.target.value);}
-  function handlePasswordChange(e) {AccountStore.setPassword(e.target.value);}
+  function handleCodeChange(e) { AccountStore.setCode(e.target.value); }
+  function handlePasswordChange(e) { AccountStore.setPassword(e.target.value); }
   function handleSubmitForm(e) {
     e.preventDefault();
 
@@ -28,13 +28,13 @@ function PasswordResetUpdate(props) {
       .then(() => history.replace('/'))
       .catch(err => {
       })
-    ;
+      ;
   };
 
   return (
-    <Container>
+    <Container className="reset-password-container">
       <Row>
-        <Col xs="12" md={{size: 6, offset: 3}}>
+        <Col xs="12" md={{ size: 6, offset: 3 }}>
           <h1>Reset password</h1>
           <p>
             <Link to="/password-reset/request">Request a password reset code</Link>

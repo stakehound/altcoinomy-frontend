@@ -30,7 +30,7 @@ function DatePicker(props) {
     <ReactDatePicker
       id={id || null}
       required={required}
-      autoComplete="off"
+      autoComplete="none"
       className={classNameNew}
       wrapperClassName={invalid ? invalidClassName : null}
       dateFormat={dateFormat || dateFormatDefault}

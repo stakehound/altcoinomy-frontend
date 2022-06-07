@@ -14,7 +14,7 @@ function SubscriptionList(props) {
   }, [SubscriptionStore]);
 
   return (
-    <Container>
+    <Container className="subscriptions-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">

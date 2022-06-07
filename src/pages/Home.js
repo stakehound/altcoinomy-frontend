@@ -7,11 +7,10 @@ import { Redirect } from 'react-router';
 function Home(props) {
   return (
     <Jumbotron>
-      <Redirect to="/login" />
-      <Container>
+      <Container className="home-container">
         <Row>
-          <Col xs="12" md={{size: 8, offset: 2}}>
-            <h1>Welcome to {props.CommonStore.appName} KYC process</h1>
+          <Col xs="12" md={{ size: 8, offset: 2 }}>
+            <h1>Welcome to {props.CommonStore.appName}</h1>
             <p>
 
 

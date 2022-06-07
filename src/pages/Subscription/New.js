@@ -17,18 +17,18 @@ function SubscriptionNew(props) {
       .then(subscription => {
         history.replace(`/subscription/${subscription.id}`);
       })
-    ;
+      ;
   }
 
   return (
-    <Container>
+    <Container className="new-subscription-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">
             <Col xs="12" md={{size: 'auto'}}>
               <h1>Staked Tokens</h1>
             </Col>
-            <Col xs="12" md={{size: 'auto'}}>
+            <Col xs="12" md={{ size: 'auto' }}>
               <Link to="/subscription" className="btn btn-secondary w-100">Cancel</Link>
             </Col>
           </Row>

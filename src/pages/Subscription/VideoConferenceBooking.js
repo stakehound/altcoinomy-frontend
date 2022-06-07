@@ -33,7 +33,7 @@ function SubscriptionVideoConferenceBooking(props) {
   }
 
   return (
-    <Container>
+    <Container className="videoconf-booding-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">
@@ -62,7 +62,9 @@ function SubscriptionVideoConferenceBooking(props) {
       <Row className="justify-content-md-between align-items-md-center">
         <Col xs="12" className="mb-12 mb-md-3 text-right">
           <strong>Status of your subscription: </strong>
+          <div className="badge badge-info">
             {statusParser(subscription.status)}
+          </div>
         </Col>
       </Row>
 

@@ -5,6 +5,7 @@ import { Alert, Media, Spinner, Row, Col, Button } from 'reactstrap';
 import statusParser from '../../helpers/statusParser'
 import IcoLogo from '../IcoLogo';
 import Step1RegisterAs from '../Step/Step1RegisterAs';
+import Step1bProofOfLiveness from '../Step/Step1bProofOfLiveness';
 import Step2Individual from '../Step/Step2Individual';
 import Step2Company from '../Step/Step2Company';
 import Step2Annex1 from '../Step/Step2Annex1';
@@ -26,11 +27,11 @@ function SubscriptionEditWrapper(props) {
   const terms = SubscriptionStore.getTerms();
   const [stepOpen, setStepOpen] = useState();
   const [shown, setShown] = useState();
-  //const [globalErrors, setGlobalErrors] = useState();
   const [successMessage, setSuccessMessage] = useState();
 
   const stepComponents = [
     Step1RegisterAs,
+    Step1bProofOfLiveness,
     Step2Individual,
     Step2Company,
     Step2Annex1,
@@ -69,7 +70,6 @@ function SubscriptionEditWrapper(props) {
     window.location.reload(false);
   }
 
-
   return (
     <>
       <Media className="mb-3">
@@ -87,7 +87,9 @@ function SubscriptionEditWrapper(props) {
       <Row className="justify-content-md-between align-items-md-center">
         <Col xs="12" className="mb-12 mb-md-3 text-right">
           <strong>Status of your subscription: </strong>
-          {statusParser(subscription.status)}
+          <div className="badge badge-info">
+            {statusParser(subscription.status)}
+          </div>
         </Col>
       </Row>
 
@@ -122,10 +124,9 @@ function SubscriptionEditWrapper(props) {
       <GlobalErrors errors={globalErrors}></GlobalErrors>
       {successMessage && <Alert color="success">{successMessage}</Alert>}
 
-
       <Row className="justify-content-md-between align-items-md-end mb-4">
-        <Col xs="12" md={{ size: 'auto' }}>
-        <CustomInput type="checkbox" id={'terms'}
+        <Col className="col-12 col-md-6">
+          <CustomInput type="checkbox" id={'terms'}
             required={true}
             className="required"
             label="I have read the terms and conditions"
@@ -137,8 +138,9 @@ function SubscriptionEditWrapper(props) {
           >
             <span className="required"></span>
           </CustomInput>
-          {fillStatus.status !== 'subscription_submitted' && <Button
-            className={`w-100 ${finalizing ? "loading" : ''}`}
+
+          <Button
+            className={`w-100 mt-5 ${finalizing ? "loading" : ''}`}
             color="primary"
             disabled={finalizing}
             onClick={() => {
@@ -157,13 +159,14 @@ function SubscriptionEditWrapper(props) {
             }}
           >
             {finalizing ? 'Submission in progress...' : 'Finalize my KYC'}
-          </Button>}
+          </Button>
+
         </Col>
         {
-          subscription.status !== 'subscription_pending'
+          fillStatus.status !== 'subscription_pending'
           &&
-          <Col xs="12" md={{ size: 'auto' }} className="mt-3 mt-md-0">
-            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-success w-100">Go to payment status page</Link>
+          <Col className="col-12 col-md-6 mt-3 mt-md-0">
+            <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-outline-success w-100">Go to payment status page</Link>
           </Col>
         }
       </Row>

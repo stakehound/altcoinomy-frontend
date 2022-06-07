@@ -1,5 +1,6 @@
 import { decorate, observable, action, computed } from 'mobx';
 import { Icos } from '../helpers/agent';
+import { PROJECTS_TO_DISPLAY } from '../config';
 
 class IcoStore {
 
@@ -28,11 +29,23 @@ class IcoStore {
         this.icosRegistry.clear();
 
         Object.keys(icos).forEach(key => {
-          this.icosRegistry.set(icos[key].id, icos[key]);
+          let projectToBeDisplayed = false;
+          if (!PROJECTS_TO_DISPLAY) {
+            projectToBeDisplayed = true;
+          } else {
+            PROJECTS_TO_DISPLAY.forEach(identifier => {
+              if (identifier === icos[key].id || identifier === icos[key].slug) {
+                projectToBeDisplayed = true;
+              }
+            });
+          }
+          if (projectToBeDisplayed) {
+            this.icosRegistry.set(icos[key].id, icos[key]);
+          }
         });
       }))
       .finally(action(() => { this.loadingCount--; }))
-    ;
+      ;
   }
 
   loadLogo(id, { acceptCached = false } = {}) {
@@ -55,7 +68,7 @@ class IcoStore {
 
         this.logoRegistry.set(id, null);
       }))
-    ;
+      ;
   }
 
   loadIco(id) {
@@ -70,7 +83,7 @@ class IcoStore {
 
         this.icoRegistry.set(id, null);
       }))
-    ;
+      ;
   }
 }
 decorate(IcoStore, {

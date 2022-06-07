@@ -7,7 +7,7 @@ function SubscriptionPaymentStatus(props) {
   const { id } = useParams();
 
   return (
-    <Container>
+    <Container className="payment-status-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">

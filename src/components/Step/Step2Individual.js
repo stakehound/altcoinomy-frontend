@@ -7,7 +7,7 @@ import { asyncSessionStorage } from '../../helpers/sessionStorage';
 
 function Step2Individual(props) {
   const groupName = 'individual';
-  const { SubscriptionStore, fillStatus, subscription,  ...otherProps } = props;
+  const { SubscriptionStore, fillStatus, subscription, ...otherProps } = props;
   const { header, fields } = fillStatus.groups[groupName];
 
   if (!header.required) {
@@ -43,9 +43,9 @@ function Step2Individual(props) {
           Object.keys(SubscriptionStore.modified[groupName])
             .forEach(modifiedFieldName => {
               if (modifiedFieldName in fields && fields[modifiedFieldName].type !== 'id')
-              modifiedFields[modifiedFieldName] = SubscriptionStore.modified[groupName][modifiedFieldName].value;
+                modifiedFields[modifiedFieldName] = SubscriptionStore.modified[groupName][modifiedFieldName].value;
             })
-          ;
+            ;
 
           SubscriptionStore.patchSubscription(groupName)
             .then(() => {
@@ -53,9 +53,9 @@ function Step2Individual(props) {
                 .forEach(modifiedFieldName => {
                   asyncSessionStorage.setItem(fillStatus.subscription_id, modifiedFieldName, modifiedFields[modifiedFieldName]);
                 })
-              ;
+                ;
             })
-          ;
+            ;
         }}
         disabled={!SubscriptionStore.isStepModified(groupName)}
       >

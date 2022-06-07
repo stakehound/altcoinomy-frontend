@@ -133,8 +133,8 @@ function StepField(props) {
   }
 
   /**
-     * Here you can override the label returned by the API if you want to customize the message.
-     */
+   * Here you can override the label returned by the API if you want to customize the message.
+   */
   function getLabel() {
     let description = "";
     switch (fieldName) {
@@ -381,7 +381,7 @@ function StepField(props) {
   if (fieldData.type === 'id') {
     return (<>
       <FormGroup>
-      {fieldName === 'id_card_front' && <img alt="MRZ example" src="/Passport_2_main_pages_sample_and_Id_with_MRZ.png" />}
+        {fieldName === 'id_card_front' && <img alt="MRZ example" src="/Passport_2_main_pages_sample_and_Id_with_MRZ.png" />}
         {getLabel()}
         <InputGroup className={`${fieldData.required ? 'file-input-required' : ''} ${fieldData.status === null || fieldData.status === 'EMPTY' ? 'status-empty' : ''}`}>
           {

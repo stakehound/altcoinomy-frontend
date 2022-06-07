@@ -138,60 +138,60 @@ class AccountStore {
   }
 
   passwordResetRequest() {
-      this.loading = true;
-      this.errors = {};
+    this.loading = true;
+    this.errors = {};
 
-      return Accounts.passwordResetRequest(this.values.email)
-        .then(res => {
-          if (res && res.success === false) {
-            this.errors.form = 'Password reset code has not been sent';
+    return Accounts.passwordResetRequest(this.values.email)
+      .then(res => {
+        if (res && res.success === false) {
+          this.errors.form = 'Password reset code has not been sent';
 
-            throw new Error('Password reset code submit error');
-          }
-        })
-        .catch(action(err => {
-          if (err.response && err.response.body && err.response.body.err_msg) {
-            this.errors.form = err.response.body.err_msg;
-          }
-          if (err.response && err.response.body && err.response.body.fields) {
-            this.errors.fields = err.response.body.fields;
-          }
+          throw new Error('Password reset code submit error');
+        }
+      })
+      .catch(action(err => {
+        if (err.response && err.response.body && err.response.body.err_msg) {
+          this.errors.form = err.response.body.err_msg;
+        }
+        if (err.response && err.response.body && err.response.body.fields) {
+          this.errors.fields = err.response.body.fields;
+        }
 
-          if (err.response.status === 403 && typeof err.response.body === 'string') {
-            this.errors.form = err.response.body;
-          }
+        if (err.response.status === 403 && typeof err.response.body === 'string') {
+          this.errors.form = err.response.body;
+        }
 
-          throw err;
-        }))
-        .finally(action(() => { this.loading = false; }))
-      ;
-    }
+        throw err;
+      }))
+      .finally(action(() => { this.loading = false; }))
+    ;
+  }
 
-    passwordResetUpdate() {
-      this.loading = true;
-      this.errors = {};
+  passwordResetUpdate() {
+    this.loading = true;
+    this.errors = {};
 
-      return Accounts.passwordResetUpdate(this.values.code, this.values.password)
-        .then(res => {
-          if (res && res.success === false) {
-            this.errors.form = 'Password reset code is invalid';
+    return Accounts.passwordResetUpdate(this.values.code, this.values.password)
+      .then(res => {
+        if (res && res.success === false) {
+          this.errors.form = 'Password reset code is invalid';
 
-            throw new Error('Password reset code is invalid');
-          }
-        })
-        .catch(action(err => {
-          if (err.response && err.response.body && err.response.body.err_msg) {
-            this.errors.form = err.response.body.err_msg;
-          }
-          if (err.response && err.response.body && err.response.body.fields) {
-            this.errors.fields = err.response.body.fields;
-          }
+          throw new Error('Password reset code is invalid');
+        }
+      })
+      .catch(action(err => {
+        if (err.response && err.response.body && err.response.body.err_msg) {
+          this.errors.form = err.response.body.err_msg;
+        }
+        if (err.response && err.response.body && err.response.body.fields) {
+          this.errors.fields = err.response.body.fields;
+        }
 
-          throw err;
-        }))
-        .finally(action(() => { this.loading = false; }))
-      ;
-    }
+        throw err;
+      }))
+      .finally(action(() => { this.loading = false; }))
+    ;
+  }
 
   logout() {
     CommonStore.setToken(undefined);

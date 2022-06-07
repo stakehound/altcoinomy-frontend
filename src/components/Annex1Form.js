@@ -3,9 +3,8 @@ import { inject, observer } from 'mobx-react';
 import { FormGroup, Button, InputGroup, InputGroupAddon, InputGroupText, Label, Input, Spinner, Col, Row } from 'reactstrap';
 import SignaturePad from 'react-signature-pad-wrapper';
 import FieldErrors from './FieldErrors';
-import DatePicker from './DatePicker';
-import CountriesSelect from './CountriesSelect';
 import { asyncSessionStorage } from '../helpers/sessionStorage';
+import CustomInput from 'reactstrap/lib/CustomInput';
 
 function Annex1Form(props) {
   const { SubscriptionStore, Annex1Store, groupName, fieldName, subscriptionId, annex, fieldData } = props;
@@ -46,7 +45,7 @@ function Annex1Form(props) {
           data.date_of_birth = sessionData.date_of_birth;
         }
       })
-    ;
+      ;
   }, [data, subscriptionId]);
 
   async function b64toBlob(base64, type = 'application/octet-stream') {
@@ -61,7 +60,11 @@ function Annex1Form(props) {
     );
   }
 
-  if (!modifying) {
+  if (!modifying && SubscriptionStore.isStepModified(groupName, fieldName)) {
+    // Simplified annex1 can't be read by the customer as they are generated afterward. Automatically attach file to subscription...
+    SubscriptionStore.patchSubscription(groupName);
+  }
+  else if (!modifying) {
     return (
       <>
         <FormGroup>
@@ -100,11 +103,7 @@ function Annex1Form(props) {
           onClick={() => { SubscriptionStore.patchSubscription(groupName); }}
           disabled={!SubscriptionStore.isStepModified(groupName, fieldName)}
         >
-          {
-            SubscriptionStore.isStepModified(groupName, fieldName)
-              ? 'I confirm that I\'ve read the generated document'
-              : 'No changes'
-          }
+          No changes
         </Button>
       </>
     );
@@ -112,53 +111,28 @@ function Annex1Form(props) {
 
   return (
     <>
-      <FormGroup>
-        <Label className="required" for={formId + '_name'}>Name / Surname or Company name</Label>
-        <Input type="text" id={formId + '_name'}
-          required
-          value={data['name']}
-          invalid={Annex1Store.hasError('name')}
-          onChange={ev => { Annex1Store.setData('name', ev.target.value); }}
-        />
-        <FieldErrors errors={errors} field="name" />
-      </FormGroup>
-
-      <FormGroup>
-        <Label className="required" for={formId + '_date_of_birth'}>Date of birth or Date of incorporation</Label>
-        <DatePicker
-          id={formId + '_date_of_birth'}
-          date={data['date_of_birth']}
-          invalid={Annex1Store.hasError('date_of_birth')}
-          onChange={date => { Annex1Store.setData('date_of_birth', date); }}
-          tillToday
-        />
-        <FieldErrors errors={errors} field="date_of_birth" />
-      </FormGroup>
-
-      <FormGroup>
-        <Label className="required" for={formId + '_address'}>Address</Label>
-        <Input type="text" id={formId + '_address'}
-          required
-          value={data['address']}
-          invalid={Annex1Store.hasError('address')}
-          onChange={ev => { Annex1Store.setData('address', ev.target.value); }}
-        />
-        <FieldErrors errors={errors} field="address" />
-      </FormGroup>
-
-      <FormGroup>
-        <Label className="required" for={formId + '_nationality'}>Nationality</Label>
-        <CountriesSelect
-          id={formId + '_nationality'}
-          value={data['nationality']}
-          optionValue="alpha_code2"
-          optionLabel="nationality"
-          invalid={Annex1Store.hasError('nationality')}
-          onChange={ev => { Annex1Store.setData('nationality', ev.target.value); }}
-        />
-        <FieldErrors errors={errors} field="nationality" />
-      </FormGroup>
-
+      <div>
+        <p>The undersigned counterparty declares</p>
+        <p>
+          <CustomInput type="checkbox" id={'iHaveNoMrz'}
+            required={true}
+            readonly={true}
+            className="required"
+            label=" being the only beneficial owner of the assets subject to the contractual relationship with ALTCOINOMY SA;"
+            checked={true}
+            invalid={false}
+          >
+          </CustomInput>
+        </p>
+        <p>
+          <strong>
+            The counterparty undertakes to inform Altcoinomy SA without undue delay about any modification relating to the
+            beneficial owner of the assets subject to the contractual relationship.
+            The counterparty acknowledges that it is a criminal offence to deliberately provide false information on this form
+            (article 251 of the Swiss Criminal Code, document forgery).
+          </strong>
+        </p>
+      </div>
       <FormGroup>
         <Label className="required" for={formId + '_place'}>Current Location</Label>
         <Input type="text" id={formId + '_place'}

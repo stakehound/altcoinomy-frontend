@@ -43,8 +43,8 @@ function SubscriptionListWrapper(props) {
                 <td>{moment(subscription.date_of_subscription).format('L')}</td>
                 <td>{statusParser(subscription.status)}</td>
                 <td className="text-right">
-                <ButtonGroup vertical size="sm">
-                  {
+                  <ButtonGroup vertical size="sm">
+                    {
                       subscription.deletable
                       &&
                       <Button
@@ -65,8 +65,9 @@ function SubscriptionListWrapper(props) {
                       subscription.status !== 'subscription_pending'
                       &&
                       <>
-                        <Link to={`/subscription/video-conference/${subscription.id}`} className="btn btn-outline-primary mr-1">Join the call</Link>
-                        <Link to={`/subscription/video-conference-booking/${subscription.id}`} className="btn btn-outline-primary mr-1">Reschedule the call</Link>
+                        {subscription.video_conference_planning && <Link to={`/subscription/video-conference/${subscription.id}`} className="btn btn-outline-primary mr-1">Join the call</Link>}
+                        {subscription.video_conference_planning && subscription.status_videoconf === "label.to_be_done" && <Link to={`/subscription/video-conference-booking/${subscription.id}`} className="btn btn-outline-primary mr-1">Reschedule the call</Link>}
+                        {!subscription.video_conference_planning && subscription.status_videoconf === "label.to_be_done" && <Link to={`/subscription/video-conference-booking/${subscription.id}`} className="btn btn-outline-primary mr-1">Select a slot for the call</Link>}
                         <Link to={`/subscription/payment-status/${subscription.id}`} className="btn btn-outline-primary mr-1">Payment status</Link>
                       </>
                     }

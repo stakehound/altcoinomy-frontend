@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import { Trash2 as IconRemove } from 'react-feather';
 import { FormGroup, Button, InputGroup, InputGroupAddon, InputGroupText, Label, Input, Spinner, Col, Row } from 'reactstrap';
 import FieldErrors from './FieldErrors';
 import TiersSelect from './TiersSelect';
@@ -63,7 +62,7 @@ function ContributionForm(props) {
           color="primary"
           onClick={() => { SubscriptionStore.loadFillStatus(subscriptionId); }}
         >
-          I've downloaded my contribution report
+          I've downloaded my contribution and want to submit
         </Button>}
       </>
     );
@@ -107,6 +106,19 @@ function ContributionForm(props) {
     }
   }
 
+  const cryptoCurrencies = data['tier'] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.crypto : [];
+  const fiatCurrencies = data['tier'] && tiersList[data['tier']] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.fiat : [];
+  const mergedCurrencies = cryptoCurrencies.concat(fiatCurrencies);
+
+  if (cryptoCurrencies.length + fiatCurrencies.length === 1) {
+    // If only one currency is possible, automatically select it...
+    let currencies = toJS(data.currencies);
+    if (currencies && currencies.length === 1 && currencies[0].currency_code !== mergedCurrencies[0].currency.code) {
+      currencies[0].currency_code = mergedCurrencies[0].currency.code;
+      ContributionStore.setData("currencies", currencies);
+    }
+  }
+
   return (
     <>
       <FormGroup>
@@ -147,8 +159,8 @@ function ContributionForm(props) {
               <CurrencySelect
                 id={formId + 'currency_code'}
                 value={currency.currency_code}
-                fiat={data['tier'] && tiersList[data['tier']] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.fiat : []}
-                crypto={data['tier'] && tiersList[data['tier']] && tiersList[data['tier']].currencies ? tiersList[data['tier']].currencies.crypto : []}
+                fiat={fiatCurrencies}
+                crypto={cryptoCurrencies}
                 invalid={ContributionStore.hasError(['currencies', index, 'currency_code'])}
                 onChange={ev => {
                   ContributionStore.setInvestment(currency, 'currency_code', ev.target.value);
@@ -172,33 +184,8 @@ function ContributionForm(props) {
               <FieldErrors errors={errors} field={['currencies', index, 'address']} />
             </FormGroup>}
           </Col>
-          <Col xs="1" className="mb-4 mb-md-0">
-            <Button
-              className="w-100"
-              color="danger"
-              onClick={() => {
-                ContributionStore.removeInvestment(currency);
-              }}
-            >
-              <IconRemove></IconRemove>
-            </Button>
-          </Col>
         </Row>
       })}
-
-      <Row className="justify-content-md-between align-items-md-center">
-        <Col xs="12" md={{ size: 'auto' }} className="mb-3">
-          <Button
-            className="w-100"
-            color="primary"
-            onClick={() => {
-              ContributionStore.addInvestment();
-            }}
-          >
-            Add
-          </Button>
-        </Col>
-      </Row>
 
       <Row className="justify-content-md-between align-items-md-center">
         <Col xs="12" md={{ size: 'auto' }} className="mb-3">

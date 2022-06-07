@@ -11,10 +11,10 @@ function PasswordResetRequest(props) {
   const history = useHistory();
 
   useEffect(() => {
-    return () => {AccountStore.reset();}
+    return () => { AccountStore.reset(); }
   }, [AccountStore]);
 
-  function handleEmailChange(e) {AccountStore.setEmail(e.target.value);}
+  function handleEmailChange(e) { AccountStore.setEmail(e.target.value); }
   function handleSubmitForm(e) {
     e.preventDefault();
 
@@ -22,13 +22,13 @@ function PasswordResetRequest(props) {
       .then(() => history.replace('/password-reset/update'))
       .catch(err => {
       })
-    ;
+      ;
   };
 
   return (
-    <Container>
+    <Container className="password-reset-container">
       <Row>
-        <Col xs="12" md={{size: 6, offset: 3}}>
+        <Col xs="12" md={{ size: 6, offset: 3 }}>
           <h1>Request a password reset code</h1>
           <p>
             <Link to="/password-reset/update">Already have a code</Link>

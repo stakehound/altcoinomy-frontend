@@ -107,9 +107,22 @@ const IcoDocuments = {
 
 const Annexes = {
   postAnnex1: (subscriptionId, data) =>
-    requests.post(`/subscriptions/${subscriptionId}/annex1`, data),
+    requests.post(`/subscriptions/${subscriptionId}/annex1/simple`, {
+      place: data.place,
+      sign: data.sign
+    }),
   postAnnex2: (subscriptionId, data) =>
     requests.post(`/subscriptions/${subscriptionId}/annex2`, data),
+};
+
+const Pol = {
+  submitPol: (caseId, ocrData, subscription) =>
+    requests.post(`/id-check`, {
+      caseId,
+      ocrData,
+      subscription
+    }),
+
 };
 
 const Contribution = {
@@ -164,4 +177,4 @@ const VideoConference = {
     }),
 };
 
-export { Accounts, Countries, Customers, Icos, IcoDocuments, Annexes, Subscriptions, Contribution, VideoConference };
+export { Accounts, Countries, Customers, Icos, IcoDocuments, Annexes, Subscriptions, Contribution, VideoConference, Pol };

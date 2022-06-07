@@ -13,6 +13,26 @@ function SubscriptionVideoConference(props) {
   const subscription = SubscriptionStore.getSubscription(id);
   const fillStatus = SubscriptionStore.fillStatus;
 
+
+  const getVideoConferenceHostname = () => {
+    let conferenceHostName = CONFERENCE_HOST_NAME;
+
+    switch (typeof conferenceHostName) {
+      case "string":
+        return conferenceHostName;
+      case "object":
+        if (conferenceHostName[window.location.host]) {
+          return conferenceHostName[window.location.host];
+        } else if (conferenceHostName["default"]) {
+          return conferenceHostName["default"];
+        } else {
+          return "";
+        }
+      default:
+        return "";
+    }
+  }
+
   useEffect(() => {
     SubscriptionStore.loadSubscription(id, { acceptCached: true });
     SubscriptionStore.loadFillStatus(id);
@@ -34,7 +54,7 @@ function SubscriptionVideoConference(props) {
   }
 
   return (
-    <Container>
+    <Container className="videoconf-container">
       <Row>
         <Col>
           <Row className="justify-content-md-between align-items-md-center mb-3">
@@ -69,7 +89,7 @@ function SubscriptionVideoConference(props) {
         </Col>
       </Row>
 
-      <iframe allow="camera;microphone" title="video-conference" src={CONFERENCE_HOST_NAME + '/' + fillStatus.video_conference_external_link} className="video-conference" />
+      <iframe allow="camera;microphone" title="video-conference" src={getVideoConferenceHostname() + '/' + fillStatus.video_conference_external_link} className="video-conference" />
     </Container>
   );
 }

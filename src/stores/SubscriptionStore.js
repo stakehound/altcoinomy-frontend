@@ -53,7 +53,7 @@ class SubscriptionStore {
   }
 
   setIHaveNoMrz(fileId, iHaveNoMrz) {
-    this.iHaveNoMrz = iHaveNoMrz;	    Subscriptions.patchFile(fileId, iHaveNoMrz).then(() => {
+    Subscriptions.patchFile(fileId, iHaveNoMrz).then(() => {
       this.iHaveNoMrz = iHaveNoMrz;
     }).catch(() => { });
   }
@@ -96,7 +96,7 @@ class SubscriptionStore {
         throw err;
       }))
       .finally(action(() => { this.finalizingCount--; }))
-      ;
+    ;
   }
 
   loadSubscriptions() {
@@ -111,7 +111,7 @@ class SubscriptionStore {
         });
       }))
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   loadSubscription(id, { acceptCached = false } = {}) {
@@ -132,7 +132,7 @@ class SubscriptionStore {
         return subscription;
       }))
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   createSubscription(icoId, registerAs) {
@@ -145,7 +145,7 @@ class SubscriptionStore {
         return subscription;
       })
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   isStepModified(groupName, fieldName = null) {
@@ -169,7 +169,7 @@ class SubscriptionStore {
     if (!this.modified[groupName][fieldName]) {
       this.modified[groupName][fieldName] = {};
     }
-
+    
     this.modified[groupName][fieldName]['value'] = value;
 
     if (this.hasFieldError(fullFieldName)) {
@@ -223,26 +223,26 @@ class SubscriptionStore {
         this.errors = err.response.body;
       })
       .finally(action(() => { this.loadingCount--; }))
-      ;
-    }
+    ;
+  }
 
-    deleteSubscription(id) {
-      this.loadingCount++;
+  deleteSubscription(id) {
+    this.loadingCount++;
 
-      this.errors = {};
+    this.errors = {};
 
-      return Subscriptions.delete(id)
-        .then(subscription => {
-          this.subscriptionRegistry.delete(subscription.id);
+    return Subscriptions.delete(id)
+      .then(subscription => {
+        this.subscriptionRegistry.delete(subscription.id);
 
-          return subscription;
-        })
-        .catch(err => {
-          this.errors = err.response.body;
-        })
-        .finally(action(() => { this.loadingCount--; }))
-      ;
-    }
+        return subscription;
+      })
+      .catch(err => {
+        this.errors = err.response.body;
+      })
+      .finally(action(() => { this.loadingCount--; }))
+    ;
+  }
 
   loadFillStatus(id) {
     this.loadingCount++;
@@ -256,7 +256,7 @@ class SubscriptionStore {
         ContributionStore.setInitialData(this.fillStatus.groups.finalization.fields.contribution.value);
       }))
       .finally(action(() => { this.loadingCount--; }))
-      ;
+    ;
   }
 
   resetFillStatus() {
@@ -269,18 +269,18 @@ class SubscriptionStore {
   }
 
   patchPaymentStatus(subscriptionId, currencies) {
-      this.loadingCount++;
+    this.loadingCount++;
 
-      this.errors = {};
+    this.errors = {};
 
-      return Subscriptions.patchPaymentStatus(subscriptionId, currencies)
-        .then()
-        .catch(err => {
-          this.errors = err.response.body;
-        })
-        .finally(action(() => { this.loadingCount--; }))
-        ;
-    }
+    return Subscriptions.patchPaymentStatus(subscriptionId, currencies)
+      .then()
+      .catch(err => {
+        this.errors = err.response.body;
+      })
+      .finally(action(() => { this.loadingCount--; }))
+    ;
+  }
 
 }
 decorate(SubscriptionStore, {

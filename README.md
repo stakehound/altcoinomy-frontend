@@ -12,7 +12,7 @@ For this purpose we assume that you have npm installed on your machine.
 
 If you want to change the design of the embeded platform, you can edit the current source code and change the css styles and react pages. If you run the development environment, you will have access to a live reload which will reload the react app after every change in your application.
 
-Run the following commands :
+Run the following commands:
 
 ```bash
 npm install
@@ -49,7 +49,21 @@ Your react app will then run on [http://localhost:8080](http://localhost:8080).
 
 ![bootstrap integration screenshot](doc/integration-sample.png "This is what you shouuld get if everything went well")
 
-
 A bootstrap demo is available in the `samples/bootstrap-integration` folder. If the POC is running on [http://localhost:8080](http://localhost:8080) you can simply load the index.html file to see how you can integrate the POC in your basic bootstrap website.
 
 > Note: If you want to change the URL you just need to edit the `samples/bootstrap-integration/index.html` file and change the iframe target.
+
+## Referral management
+
+If you need to pass some referal to your page in order to feed the customer referral tag, you can use the following :
+[http://localhost:3000/?referral=my-tag](http://localhost:3000/?referral=my-tag).
+
+Note that the referal will be stored in the sessionStorage and any user registering after using this link will get the referal fed in the customer object.
+
+## Theming
+
+It is up to you to customize your front-end instance.
+All your changes should ideally be done in the theme folder :
+
+- `theme.scss` is the index file of your theme
+- `variables.scss` is the variable file to be imported before the bootstrap library. You can override any bootstrap variables and define custom variable for the rest of your template.
